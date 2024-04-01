@@ -10,12 +10,14 @@ const Product = ({
 }) => {
   return (
     <Link
-      to={"/"}
+      to={"/room/123"}
       className={`w-full h-full rounded-2xl shadow bg-white ${className}`}
     >
       <div className="relative p-2">
         <img
           className="rounded-2xl"
+          width={"100%"}
+          height={200}
           src={imageUrl}
           alt="product image"
         />

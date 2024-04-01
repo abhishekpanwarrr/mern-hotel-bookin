@@ -5,6 +5,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { TbLogout } from "react-icons/tb";
 import { Separator } from "@/components/ui/separator";
+import { BsFillDice6Fill } from "react-icons/bs";
 import {
   Sheet,
   SheetContent,
@@ -36,9 +37,9 @@ const TopNavbar = () => {
               className="h-8 rounded-full"
               alt="Flowbite Logo"
             />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            {/* <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               PIXELS
-            </span>
+            </span> */}
           </Link>
           <div className="flex md:order-1">
             <div className="relative md:block md:min-w-[550px]">
@@ -52,9 +53,9 @@ const TopNavbar = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                   />
                 </svg>
@@ -86,9 +87,9 @@ const TopNavbar = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M1 1h15M1 7h15M1 13h15"
                   />
                 </svg>
@@ -107,9 +108,9 @@ const TopNavbar = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                   />
                 </svg>
@@ -133,7 +134,7 @@ const TopNavbar = () => {
               </li>
               <li>
                 <Link
-                  to="/"
+                  to="/liked"
                   className="block py-2 px-3 text-gray-900 rounded  dark:text-white"
                 >
                   <FaRegHeart />
@@ -145,6 +146,14 @@ const TopNavbar = () => {
                   className=" block py-2 px-3 text-gray-900 rounded  dark:text-white "
                 >
                   <IoNotificationsOutline />
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/rooms"}
+                  className=" block py-2 px-3 text-gray-900 rounded  dark:text-white "
+                >
+                  <BsFillDice6Fill />
                 </Link>
               </li>
               <li>
