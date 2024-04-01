@@ -7,34 +7,36 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-const data = [
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/125779/pexels-photo-125779.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/125779/pexels-photo-125779.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/2113994/pexels-photo-2113994.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-  },
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/277390/pexels-photo-277390.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-  {
-    imageUrl:
-      "https://images.pexels.com/photos/1532244/pexels-photo-1532244.jpeg?auto=compress&cs=tinysrgb&w=800",
-  },
-];
-
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import Skeletorn from "@/components/Skeletorn";
 const HomePage = () => {
+  const [items, setItems] = useState([]);
+  const getTodos = async () => {
+    return (await fetch("https://jsonplaceholder.typicode.com/photos")).json();
+  };
+
+  const {
+    data: todos,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getTodos,
+  });
+  useEffect(() => {
+    if (todos) {
+      setItems(todos);
+    }
+  }, [todos]);
+
+  if (isError) {
+    return (
+      <h3 className="text-center font-bold text-red-600">
+        Error fetching data
+      </h3>
+    );
+  }
   return (
     <div>
       <div className="flex flex-1 md:flex-row flex-col justify-between gap-10 bg-slate-100 rounded-2xl shadow-sm py-2">
@@ -127,13 +129,26 @@ const HomePage = () => {
           </div>
 
           {/* Recommended products */}
-          <div className="flex flex-col flex-wrap md:flex-nowrap md:flex-row gap-1 px-1 justify-center items-center ">
-            {data.slice(0, 3).map((item, index) => (
-              <Product key={index} className={""} imageUrl={item.imageUrl} />
-            ))}
-            {/* <Product className={""} />
-            <Product className={""} /> */}
-          </div>
+          {isLoading ? (
+            <div className="flex gap-3 my-4">
+              {[1, 2, 3].map((_, index) => (
+                <Skeletorn key={index} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col flex-wrap md:flex-nowrap md:flex-row gap-1 px-1 justify-center items-center ">
+              {items.length > 0 &&
+                items.slice(0,100)
+                  ?.slice(0, 3)
+                  .map((item: any, index) => (
+                    <Product
+                      key={index}
+                      className={""}
+                      imageUrl={item.thumbnailUrl}
+                    />
+                  ))}
+            </div>
+          )}
         </div>
         <div className="w-1/2 p-5 hidden lg:block">
           <p className="text-base font-bold mb-2 text-gray-700">
@@ -184,38 +199,62 @@ const HomePage = () => {
         <h3 className="pl-5 font-semibold text-lg my-2">
           Recently added in stock
         </h3>
-        <Carousel className=" mb-20 mx-10">
-          <CarouselContent className="max-h-[450px]">
-            {data.map((item, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
-              >
-                <Product className={"h-[100%]"} imageUrl={item.imageUrl} />
-              </CarouselItem>
+        {isLoading ? (
+          <div className="flex gap-3 my-5">
+            {[1, 2, 3, 4, 5].map((_, index) => (
+              <Skeletorn key={index} />
             ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          </div>
+        ) : (
+          <Carousel className="mb-20 mx-10">
+            <CarouselContent className="max-h-[450px]">
+              {items.length > 0 &&
+                items?.slice(0,100).map((item: any, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                  >
+                    <Product
+                      className={"h-[100%]"}
+                      imageUrl={item.thumbnailUrl}
+                    />
+                  </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        )}
       </div>
       {/* Recent Products */}
       <div className="px-5">
         <h3 className="pl-5 font-semibold text-lg my-2">New Items in stock</h3>
-        <Carousel className=" mb-20 mx-10">
-          <CarouselContent className="max-h-[450px]">
-            {data.reverse().map((item, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
-              >
-                <Product className={"h-[100%]"} imageUrl={item.imageUrl} />
-              </CarouselItem>
+        {isLoading ? (
+          <div className="flex gap-3 my-5">
+            {[1, 2, 3, 4, 5].map((_, index) => (
+              <Skeletorn key={index} />
             ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          </div>
+        ) : (
+          <Carousel className=" mb-20 mx-10">
+            <CarouselContent className="max-h-[450px]">
+              {items.length > 0 &&
+                items?.slice(0,100).reverse().map((item: any, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                  >
+                    <Product
+                      className={"h-[100%]"}
+                      imageUrl={item.thumbnailUrl}
+                    />
+                  </CarouselItem>
+                ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        )}
       </div>
     </div>
   );
