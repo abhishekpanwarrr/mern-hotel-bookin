@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
+import { TbLogout } from "react-icons/tb";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -10,6 +13,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const TopNavbar = () => {
   return (
@@ -110,7 +121,7 @@ const TopNavbar = () => {
                 placeholder="Search..."
               />
             </div>
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 items-center">
+            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-2 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 items-center">
               <li>
                 <Link
                   to="/"
@@ -135,6 +146,30 @@ const TopNavbar = () => {
                 >
                   <IoNotificationsOutline />
                 </Link>
+              </li>
+              <li>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <button className=" block py-2 px-3 text-gray-900 rounded  dark:text-white ">
+                      <CgProfile />
+                    </button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent className="bg-gray-800 text-white min-w-[12rem] bottom-0 outline-none">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Billing</DropdownMenuItem>
+                    <DropdownMenuItem>Team</DropdownMenuItem>
+                    <Separator
+                      className="bg-gray-500"
+                      orientation="horizontal"
+                    />
+                    <DropdownMenuItem className="gap-2">
+                      <TbLogout /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </li>
             </ul>
           </div>
