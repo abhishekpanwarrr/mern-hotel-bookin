@@ -1,40 +1,30 @@
+import { HotelType } from "@/types";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Product = ({ className, item }: { className: string; item: any }) => {
-  // Function to calculate average rating
+const Hotel = ({ className, item }: { className?: string; item: HotelType }) => {
   const calculateAverageRating = () => {
     let sum = 0;
     let totalCount = 0;
 
-    // Iterate through each rating object
     item?.ratings.forEach((ratingObj: any) => {
-      // Get the rating value and count
       const ratingValue = parseInt(Object.keys(ratingObj)[0]);
       const count = ratingObj[ratingValue];
-
-      // Add to sum and total count
       sum += ratingValue * count;
       totalCount += count;
     });
-
-    // Calculate average rating
     const averageRating = sum / totalCount;
-    return averageRating.toFixed(2); // Round to 2 decimal places
+    return averageRating.toFixed(2);
   };
-
-  // Calculate average rating
   const averageRating = calculateAverageRating();
   return (
     <Link
-      to={"/room/123"}
-      className={`w-full h-full rounded-2xl shadow bg-white ${className}`}
+      to={`/hotel/${item?._id}`}
+      className={`w-full h-full rounded-2xl border border-red-500 shadow bg-white ${className} overflow-hidden`}
     >
       <div className="relative p-2">
         <img
-          className="rounded-2xl"
-          width={"100%"}
-          height={200}
+          className="rounded-2xl w-full xs:h-[150px] sm:h-[200px] md:h-[]"
           src={item?.imageUrl}
           alt="product image"
         />
@@ -43,7 +33,7 @@ const Product = ({ className, item }: { className: string; item: any }) => {
         </div>
       </div>
       <div className="px-3 pb-5">
-        <p className="text-lg font-semibold text-gray-700 tracking-tight">
+        <p className="text-lg font-semibold text-gray-700 tracking-tight truncate">
           {item?.hotelName || "Opula haven hotel"}
         </p>
         <p className="text-sm font-normal text-gray-400 mb-4">
@@ -72,4 +62,4 @@ const Product = ({ className, item }: { className: string; item: any }) => {
   );
 };
 
-export default Product;
+export default Hotel;

@@ -10,7 +10,6 @@ interface Props {
   sidebarShow: boolean;
 }
 const SideNavbar = ({ sidebarShow }: Props) => {
-  console.log("🚀 ~ SideNavbar ~ sidebarShow:", sidebarShow);
   return (
     <aside
       className={`fixed top-0 h-screen w-24 bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-900 dark:border-gray-700"

@@ -150,7 +150,7 @@ const TopNavbar = () => {
               </li>
               <li>
                 <Link
-                  to={"/rooms"}
+                  to={"/hotels"}
                   className=" block py-2 px-3 text-gray-900 rounded  dark:text-white "
                 >
                   <BsFillDice6Fill />

@@ -1,9 +1,12 @@
 import { IoBedOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
-import { hotels } from "@/data/data";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { HotelType } from "@/types";
 
 const schema = yup
   .object({
@@ -36,7 +39,27 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>;
 
 const ProductPage = () => {
-  const hotel = hotels[0];
+  const params = useParams();
+  const getHotelData = async () => {
+    return (
+      await fetch(`http://localhost:8000/api/v1/hotel/hotel/${params.id}`, {
+        method: "GET",
+      })
+    ).json();
+  };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["hotelData"],
+    queryFn: getHotelData,
+  });
+  const [hotel, setHotel] = useState<HotelType>({} as HotelType);
+
+  useEffect(() => {
+    if (data) {
+      setHotel(data?.hotel);
+    }
+  }, [data]);
+
   const {
     register,
     handleSubmit,
@@ -46,6 +69,17 @@ const ProductPage = () => {
   });
   const onSubmit = (data: FormData) => console.log(data);
 
+  if (isError) {
+    return (
+      <h3 className="text-center font-bold text-red-600">
+        Error fetching data
+      </h3>
+    );
+  }
+  if (isLoading) {
+    return <h3 className="text-center font-bold text-red-600">Loading....</h3>;
+  }
+
   return (
     <div className="w-full">
       <nav
@@ -54,8 +88,8 @@ const ProductPage = () => {
       >
         <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
           <li className="inline-flex items-center">
-            <a
-              href="#"
+            <Link
+              to={"/"}
               className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
             >
               <svg
@@ -68,7 +102,7 @@ const ProductPage = () => {
                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
               </svg>
               Home
-            </a>
+            </Link>
           </li>
           <li>
             <div className="flex items-center">
@@ -87,12 +121,12 @@ const ProductPage = () => {
                   d="m1 9 4-4-4-4"
                 />
               </svg>
-              <a
-                href="#"
+              <Link
+                to="/hotels"
                 className="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white"
               >
-                Product
-              </a>
+                hotel
+              </Link>
             </div>
           </li>
           <li aria-current="page">
@@ -113,7 +147,7 @@ const ProductPage = () => {
                 />
               </svg>
               <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
-                Details
+                {hotel?.hotelName}
               </span>
             </div>
           </li>
@@ -133,8 +167,9 @@ const ProductPage = () => {
               alt="image description"
             />
           </div>
-          <div className="flex justify-between gap-1 items-center my-4">
-            <div className="px-1">
+
+          <div className="flex justify-between items-center my-4">
+            <div className="px-1 basis-2/3">
               <h3 className="font-semibold text-gray-700 text-lg">
                 {hotel.hotelName}
               </h3>
@@ -149,17 +184,31 @@ const ProductPage = () => {
                 </span>
               </p>
             </div>
-            <div>
-              <p className="font-semibold text-base ">
-                ₹ {hotel.roomType[0]?.deluxe}{" "}
-                <span className="text-sm font-normal">/night</span>
-              </p>
+            <div className=" basis-1/2">
+              {/* ₹ {hotel?.roomType[0]?.deluxe}{" "} */}
+              <div className="flex flex-col">
+                {hotel?.roomType?.map((room) => {
+                  const [roomType, price] = Object.entries(room)[0];
+                  return (
+                    <div className="flex justify-between my-1">
+                      <span className="capitalize font-semibold">
+                        {roomType}
+                      </span>
+                      <span className="text-sm font-normal">
+                        ₹{price}
+                        {"  "} /night
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
+
           {/* Hotel Description */}
           <div className="mb-2">
             <p className="text-sm text-gray-500 font-extralight pl-2">
-              {hotel.description}
+              {hotel?.description}
             </p>
           </div>
           {/* Extra Info */}
