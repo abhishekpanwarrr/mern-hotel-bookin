@@ -10,8 +10,15 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Skeletorn from "@/components/Skeletorn";
+import { Button } from "@/components/ui/button";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { hotels } from "@/data/data";
+
 const HomePage = () => {
   const [items, setItems] = useState([]);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const getTodos = async () => {
     return (await fetch("https://jsonplaceholder.typicode.com/photos")).json();
   };
@@ -39,6 +46,63 @@ const HomePage = () => {
   }
   return (
     <div>
+      {/* Carousel */}
+      <div>
+        <Carousel className="relative mb-20 mx-10">
+          <CarouselContent className="max-h-[550px]">
+            {[1, 2, 3, 4].map((_, index) => (
+              <CarouselItem key={index} className="">
+                <img
+                  src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  className=" w-full h-full object-cover"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="absolute -bottom-6  w-full hidden md:block">
+            <div className="">
+              <div className="max-w-lg mx-auto flex gap-4 items-center bg-white px-6 py-2 shadow-lg">
+                <div>
+                  <label
+                    htmlFor=""
+                    className="text-gray-500 text-sm font-light"
+                  >
+                    Check in date{" "}
+                  </label>
+                  <DatePicker
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block min-w-min p-2.5 dark:bg-gray-700 dark:border-gray-600 max-w-max dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    selected={startDate}
+                    placeholderText="Check in date"
+                    onChange={(date: any) => setStartDate(date)}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor=""
+                    className="text-gray-500 text-sm font-light"
+                  >
+                    Check out date
+                  </label>
+                  <DatePicker
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block min-w-min p-2.5 dark:bg-gray-700 dark:border-gray-600 max-w-max dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    selected={endDate}
+                    placeholderText="Check in date"
+                    onChange={(date: any) => setEndDate(date)}
+                  />
+                </div>
+                <Button
+                  variant={"default"}
+                  className="bg-gray-700 text-white mt-6 px-5"
+                >
+                  Search
+                </Button>
+              </div>
+            </div>
+          </div>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      </div>
       <div className="flex flex-1 md:flex-row flex-col justify-between gap-10 bg-slate-100 rounded-2xl shadow-sm py-2">
         <div className="w-full lg:w-1/2">
           {/* User Details */}
@@ -64,17 +128,17 @@ const HomePage = () => {
           </div>
 
           {/* Hero */}
-          <div className="w-full p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-            <h5 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
-              Work fast from anywhere
+          <div className="w-full my-3 p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+            <h5 className="mb-2 text-3xl font-bold text-gray-900">
+              Book fast from anywhere
             </h5>
             <p className="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">
-              Stay up to date and move work forward with Flowbite on iOS &
-              Android. Download the app today.
+              Stay up to date and book hotel rooms fast forward with Our app on
+              iOS & Android. Download the app today.
             </p>
             <div className="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
-              <a
-                href="#"
+              <Link
+                to={"/"}
                 className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
               >
                 <svg
@@ -98,9 +162,9 @@ const HomePage = () => {
                     Mac App Store
                   </div>
                 </div>
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/"
                 className="w-full sm:w-auto bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 text-white rounded-lg inline-flex items-center justify-center px-4 py-2.5 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
               >
                 <svg
@@ -124,7 +188,7 @@ const HomePage = () => {
                     Google Play
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -137,14 +201,14 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="flex flex-col flex-wrap md:flex-nowrap md:flex-row gap-1 px-1 justify-center items-center ">
-              {items.length > 0 &&
-                items.slice(0,100)
+              {hotels.length > 0 &&
+                hotels
                   ?.slice(0, 3)
                   .map((item: any, index) => (
                     <Product
                       key={index}
                       className={""}
-                      imageUrl={item.thumbnailUrl}
+                      item={item}
                     />
                   ))}
             </div>
@@ -154,43 +218,32 @@ const HomePage = () => {
           <p className="text-base font-bold mb-2 text-gray-700">
             Recent searches
           </p>
-          <div className="flex flex-col gap-2">
-            <Link
-              to="/"
-              className="flex flex-row md:flex-col items-center  shadow lg:flex-row md:max-w-xl rounded-2xl"
-            >
-              <img
-                className="object-cover w-full h-50 md:h-auto md:w-48 rounded-2xl"
-                src="https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                alt=""
-              />
-              <div className="flex flex-col justify-between px-4 ">
-                <p className="mb-1 text-base font-bold text-gray-700">
-                  Singapore hotel
-                </p>
-                <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
-                  Bantul yanioles
-                </p>
-              </div>
-            </Link>
-            <Link
-              to="/"
-              className="flex flex-row md:flex-col items-center  shadow lg:flex-row md:max-w-xl rounded-2xl"
-            >
-              <img
-                className="object-cover w-full h-50 md:h-auto md:w-48 rounded-2xl"
-                src="https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                alt=""
-              />
-              <div className="flex flex-col justify-between px-4 ">
-                <p className="mb-1 text-base font-bold text-gray-700">
-                  Singapore hotel
-                </p>
-                <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
-                  Bantul yanioles
-                </p>
-              </div>
-            </Link>
+          <div className="flex flex-col gap-3">
+            {hotels.map((hotel, index) => (
+              <Link
+                to="/"
+                key={index}
+                className="flex flex-row md:flex-col items-center  shadow lg:flex-row md:max-w-xl rounded-2xl"
+              >
+                <img
+                  className="object-cover w-full h-50 md:h-auto md:w-48 rounded-2xl"
+                  src={hotel.imageUrl}
+                  alt=""
+                />
+                <div className="flex flex-col justify-between px-4 w-full">
+                  <p className="mb-1 text-base font-bold text-gray-700 flex justify-between w-full basis-1/2">
+                    {hotel.hotelName}
+                    <span className="font-bold basis-1/2">
+                      ₹{hotel.roomType[0]?.deluxe}
+                      <span className="font-normal text-xs">/ 24 hours</span>
+                    </span>
+                  </p>
+                  <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
+                    {hotel.address}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -209,7 +262,7 @@ const HomePage = () => {
           <Carousel className="mb-20 mx-10">
             <CarouselContent className="max-h-[450px]">
               {items.length > 0 &&
-                items?.slice(0,100).map((item: any, index) => (
+                items?.slice(0, 100).map((item: any, index) => (
                   <CarouselItem
                     key={index}
                     className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
@@ -239,17 +292,20 @@ const HomePage = () => {
           <Carousel className=" mb-20 mx-10">
             <CarouselContent className="max-h-[450px]">
               {items.length > 0 &&
-                items?.slice(0,100).reverse().map((item: any, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
-                  >
-                    <Product
-                      className={"h-[100%]"}
-                      imageUrl={item.thumbnailUrl}
-                    />
-                  </CarouselItem>
-                ))}
+                items
+                  ?.slice(0, 100)
+                  .reverse()
+                  .map((item: any, index) => (
+                    <CarouselItem
+                      key={index}
+                      className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                    >
+                      <Product
+                        className={"h-[100%]"}
+                        imageUrl={item.thumbnailUrl}
+                      />
+                    </CarouselItem>
+                  ))}
             </CarouselContent>
             <CarouselPrevious />
             <CarouselNext />
