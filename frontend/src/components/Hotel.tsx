@@ -1,8 +1,17 @@
 import { HotelType } from "@/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
-const Hotel = ({ className, item }: { className?: string; item: HotelType }) => {
+import toast from "react-hot-toast";
+const Hotel = ({
+  className,
+  item,
+}: {
+  className?: string;
+  item: HotelType;
+}) => {
+  const queryClient = useQueryClient();
   const calculateAverageRating = () => {
     let sum = 0;
     let totalCount = 0;
@@ -17,10 +26,60 @@ const Hotel = ({ className, item }: { className?: string; item: HotelType }) => 
     return averageRating.toFixed(2);
   };
   const averageRating = calculateAverageRating();
+  const fetchAllHotels = async () => {
+    return (
+      await fetch(
+        "http://localhost:8000/api/v1/users/660d50fda80847a6bb79f1f7",
+        { method: "GET" }
+      )
+    ).json();
+  };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["userDetails"],
+    queryFn: fetchAllHotels,
+  });
+  console.log("🚀 ~ data:", data);
+
+  const mutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await fetch("http://localhost:8000/api/v1/hotel/liked", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const responseData = await response.json();
+      return responseData; //
+    },
+    onSuccess: (data) => {
+      toast.success(data?.msg);
+      queryClient.invalidateQueries({ queryKey: ["userDetails"] });
+    },
+  });
+
+  if (isError) {
+    alert("Something went wrong");
+  }
+  const handleLiked = (id: string) => {
+    // @ts-ignore
+    mutation.mutate({
+      userId: "660d50fda80847a6bb79f1f7",
+      hotelId: id,
+    });
+  };
+  // console.log("mutate", mutation.data);
+  // if (mutation.data) {
+  //   toast(mutation?.data?.msg);
+  // }
+  // if(mutation.data){
+  //   return toast(mutation.data)
+  // }
   return (
     <Link
       to={`/hotel/${item?._id}`}
-      className={`w-full h-full rounded-2xl border border-red-500 shadow bg-white ${className} overflow-hidden`}
+      className={`w-full h-full rounded-2xl shadow bg-white ${className} overflow-hidden`}
     >
       <div className="relative p-2">
         <img
@@ -29,7 +88,16 @@ const Hotel = ({ className, item }: { className?: string; item: HotelType }) => 
           alt="product image"
         />
         <div className="flex absolute top-10 right-10 bg-white rounded-full p-2 items-center justify-center">
-          <FaRegHeart className=" size-5 " />
+          {data?.user?.likedHotel && (
+            <FaRegHeart
+              className={`size-5`}
+              fill={data?.user?.likedHotel.includes(item?._id) ? "red" : ""}
+              onClick={(e: React.MouseEvent<SVGElement, MouseEvent>) => {
+                e.preventDefault();
+                handleLiked(item?._id);
+              }}
+            />
+          )}
         </div>
       </div>
       <div className="px-3 pb-5">
@@ -41,6 +109,7 @@ const Hotel = ({ className, item }: { className?: string; item: HotelType }) => 
         </p>
         <div className="flex items-center justify-between">
           <span className="text-base font-bold">
+            {/* @ts-ignore */}
             <span className="font-bold">₹{item?.roomType[0]?.deluxe}</span>{" "}
             <span className="font-normal text-xs">/ 24 hours</span>
           </span>

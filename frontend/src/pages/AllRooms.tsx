@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 
 const AllRooms = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
-  console.log("🚀 ~ AllRooms ~ hotels:", hotels);
   const fetchAllHotels = async () => {
     return (
       await fetch("http://localhost:8000/api/v1/hotel", { method: "GET" })
@@ -40,14 +39,13 @@ const AllRooms = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {isLoading ? (
             <div className="flex gap-3 my-4">
-              {[1, 2, 3].map((_, index) => (
+              {[1, 2, 3, 4, 5].map((_, index) => (
                 <Skeletorn key={index} />
               ))}
             </div>
           ) : (
             hotels.length > 0 &&
             hotels.map((item: HotelType) => {
-              console.log("🚀 ~ hotels.map ~ item:", item);
               return <Hotel key={item._id} item={item} />;
             })
           )}

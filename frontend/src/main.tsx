@@ -16,6 +16,7 @@ import NotFound from "./components/NotFound.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import AllRooms from "./pages/AllRooms.tsx";
 import LinkedPage from "./pages/LinkedPage.tsx";
+import Orders from "./pages/Orders.tsx";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="" element={<HomePage />} />
       <Route path="hotel/:id" element={<ProductPage />} />
       <Route path="hotels" element={<AllRooms />} />
+      <Route path="orders" element={<Orders />} />
       <Route path="liked" element={<LinkedPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>

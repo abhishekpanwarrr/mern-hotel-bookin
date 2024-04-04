@@ -22,8 +22,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dispatch, SetStateAction } from "react";
 
-const TopNavbar = () => {
+interface Props {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
+const TopNavbar = ({ setOpen }: Props) => {
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 w-full z-10">
       <Sheet>
@@ -37,9 +41,6 @@ const TopNavbar = () => {
               className="h-8 rounded-full"
               alt="Flowbite Logo"
             />
-            {/* <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              PIXELS
-            </span> */}
           </Link>
           <div className="flex md:order-1">
             <div className="relative md:block md:min-w-[550px]">
@@ -126,34 +127,38 @@ const TopNavbar = () => {
               <li>
                 <Link
                   to="/"
-                  className="block py-2 px-3 text-white rounded "
+                  className="flex items-center gap-3 hover:bg-blue-400 py-2 px-3 text-white rounded "
                   aria-current="page"
                 >
                   <FiHome />
+                  Home
                 </Link>
               </li>
               <li>
                 <Link
                   to="/liked"
-                  className="block py-2 px-3 text-gray-900 rounded  dark:text-white"
+                  className="flex items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white"
                 >
                   <FaRegHeart />
+                  Saved hotels
                 </Link>
               </li>
               <li>
                 <Link
-                  to={"/"}
-                  className=" block py-2 px-3 text-gray-900 rounded  dark:text-white "
+                  to={"/orders"}
+                  className="flex items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white "
                 >
                   <IoNotificationsOutline />
+                  Orders
                 </Link>
               </li>
               <li>
                 <Link
                   to={"/hotels"}
-                  className=" block py-2 px-3 text-gray-900 rounded  dark:text-white "
+                  className="flex items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white "
                 >
                   <BsFillDice6Fill />
+                  All hotels
                 </Link>
               </li>
               <li>
@@ -165,11 +170,16 @@ const TopNavbar = () => {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent className="bg-gray-800 text-white min-w-[12rem] bottom-0 outline-none">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
-                    <DropdownMenuItem>Team</DropdownMenuItem>
+                    <DropdownMenuItem>Guest</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpen(true)}>
+                      Profile
+                    </DropdownMenuItem>
+                    <Separator
+                      className="bg-gray-500"
+                      orientation="horizontal"
+                    />
+                    <DropdownMenuItem>Orders</DropdownMenuItem>
+                    <DropdownMenuItem>Settings</DropdownMenuItem>
                     <Separator
                       className="bg-gray-500"
                       orientation="horizontal"

@@ -69,17 +69,6 @@ const ProductPage = () => {
   });
   const onSubmit = (data: FormData) => console.log(data);
 
-  if (isError) {
-    return (
-      <h3 className="text-center font-bold text-red-600">
-        Error fetching data
-      </h3>
-    );
-  }
-  if (isLoading) {
-    return <h3 className="text-center font-bold text-red-600">Loading....</h3>;
-  }
-
   return (
     <div className="w-full">
       <nav
@@ -147,275 +136,287 @@ const ProductPage = () => {
                 />
               </svg>
               <span className="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">
-                {hotel?.hotelName}
+                {isLoading ? (
+                  <>Loading...</>
+                ) : isError ? null : (
+                  hotel?.hotelName
+                )}
               </span>
             </div>
           </li>
         </ol>
       </nav>
       {/* Room details */}
-      <div className="flex md:flex-row flex-col justify-between gap-10">
-        {/* Room details */}
-        <div className="basis-1/2">
-          <div className="w-full h-96">
-            <img
-              className="w-full h-full object-cover rounded-sm"
-              src={
-                hotel.imageUrl ||
-                "https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg?auto=compress&cs=tinysrgb&w=800"
-              }
-              alt="image description"
-            />
-          </div>
+      {isLoading ? (
+        <h3 className="text-center font-bold text-red-600">Loading....</h3>
+      ) : isError ? (
+        <h3 className="text-center font-bold text-red-600">
+          Error fetching data
+        </h3>
+      ) : (
+        <div className="flex md:flex-row flex-col justify-between gap-10">
+          {/* Room details */}
+          <div className="basis-1/2">
+            <div className="w-full h-96">
+              <img
+                className="w-full h-full object-cover rounded-sm"
+                src={
+                  hotel.imageUrl ||
+                  "https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg?auto=compress&cs=tinysrgb&w=800"
+                }
+                alt="image description"
+              />
+            </div>
 
-          <div className="flex justify-between items-center my-4">
-            <div className="px-1 basis-2/3">
-              <h3 className="font-semibold text-gray-700 text-lg">
-                {hotel.hotelName}
-              </h3>
-              <p className="flex gap-3">
-                <span className="flex items-center gap-2">
-                  <IoBedOutline /> 2 Beds{" "}
-                </span>
-                |{" "}
-                <span className="flex items-center gap-2">
-                  <FaRegCalendarAlt />
-                  Tus. Jan 2024
-                </span>
+            <div className="flex justify-between items-center my-4">
+              <div className="px-1 basis-2/3">
+                <h3 className="font-semibold text-gray-700 text-lg">
+                  {hotel.hotelName}
+                </h3>
+                <p className="flex gap-3">
+                  <span className="flex items-center gap-2">
+                    <IoBedOutline /> 2 Beds{" "}
+                  </span>
+                  |{" "}
+                  <span className="flex items-center gap-2">
+                    <FaRegCalendarAlt />
+                    Tus. Jan 2024
+                  </span>
+                </p>
+              </div>
+              <div className=" basis-1/2">
+                {/* ₹ {hotel?.roomType[0]?.deluxe}{" "} */}
+                <div className="flex flex-col">
+                  {hotel?.roomType?.map((room, index) => {
+                    const [roomType, price] = Object.entries(room)[0];
+                    return (
+                      <div key={index} className="flex justify-between my-1">
+                        <span className="capitalize font-semibold">
+                          {roomType}
+                        </span>
+                        <span className="text-sm font-normal">
+                          ₹{price}
+                          {"  "} /night
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Hotel Description */}
+            <div className="mb-2">
+              <p className="text-sm text-gray-500 font-extralight pl-2">
+                {hotel?.description}
               </p>
             </div>
-            <div className=" basis-1/2">
-              {/* ₹ {hotel?.roomType[0]?.deluxe}{" "} */}
-              <div className="flex flex-col">
-                {hotel?.roomType?.map((room) => {
-                  const [roomType, price] = Object.entries(room)[0];
-                  return (
-                    <div className="flex justify-between my-1">
-                      <span className="capitalize font-semibold">
-                        {roomType}
-                      </span>
-                      <span className="text-sm font-normal">
-                        ₹{price}
-                        {"  "} /night
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+            {/* Extra Info */}
+            <div className="border border-gray-300 p-4 mb-20">
+              <p className="text-sm text-gray-500 font-light">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Est
+                repellat ad corporis eum facilis amet officia, iusto architecto
+                officiis iure, molestiae, minima error cupiditate laudantium!
+                Voluptas magni ut consequuntur maiores.
+              </p>
             </div>
           </div>
 
-          {/* Hotel Description */}
-          <div className="mb-2">
-            <p className="text-sm text-gray-500 font-extralight pl-2">
-              {hotel?.description}
-            </p>
-          </div>
-          {/* Extra Info */}
-          <div className="border border-gray-300 p-4 mb-20">
-            <p className="text-sm text-gray-500 font-light">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Est
-              repellat ad corporis eum facilis amet officia, iusto architecto
-              officiis iure, molestiae, minima error cupiditate laudantium!
-              Voluptas magni ut consequuntur maiores.
-            </p>
-          </div>
-        </div>
-
-        {/* Checkout details */}
-        <div className="basis-1/2 py-4 px-10">
-          <h3 className="font-semibold text-gray-700 mb-3 underline">
-            Check out details
-          </h3>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Name and email */}
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="name"
-                >
-                  Full Name
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
-                  type="text"
-                  id="name"
-                  placeholder="Full name"
-                  {...register("name")}
-                />
-                {errors.name && (
-                  <p className="text-red-500 text-xs italic">
-                    Full name is required
-                  </p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="email"
-                  type="email"
-                  placeholder="johndoe@example.com"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-red-500 text-xs italic">
-                    Email is required
-                  </p>
-                )}
-              </div>
-            </div>
-            {/* Phone number and house no */}
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="mb-4 flex flex-col">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="phone-input"
-                >
-                  Phone number
-                </label>
-                <div className="">
-                  <div className="flex items-center w-full">
-                    <div
-                      id="dropdown-phone-button"
-                      data-dropdown-toggle="dropdown-phone"
-                      className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
-                    >
-                      <svg
-                        fill="none"
-                        aria-hidden="true"
-                        className="h-4 w-4 me-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                        id="india"
-                      >
-                        <path
-                          fill="#f0f0f0"
-                          d="M0 85.337h512v341.326H0z"
-                        ></path>
-                        <path
-                          fill="#ff9811"
-                          d="M0 85.337h512v113.775H0z"
-                        ></path>
-                        <path
-                          fill="#6da544"
-                          d="M0 312.888h512v113.775H0z"
-                        ></path>
-                        <circle
-                          cx="256"
-                          cy="256"
-                          r="43.896"
-                          fill="#0052b4"
-                        ></circle>
-                        <circle
-                          cx="256"
-                          cy="256"
-                          r="27.434"
-                          fill="#f0f0f0"
-                        ></circle>
-                        <path
-                          fill="#0052b4"
-                          d="m256 222.146 8.464 19.195 20.855-2.268L272.927 256l12.392 16.927-20.855-2.268L256 289.854l-8.464-19.195-20.855 2.268L239.073 256l-12.392-16.927 20.855 2.268z"
-                        ></path>
-                      </svg>
-                      +91{" "}
-                    </div>
-                    <input
-                      type="text"
-                      id="phone-input"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      {...register("phone")}
-                      placeholder="123-456-7890"
-                    />
-                  </div>
-                  {errors.address && (
+          {/* Checkout details */}
+          <div className="basis-1/2 py-4 px-10">
+            <h3 className="font-semibold text-gray-700 mb-3 underline">
+              Check out details
+            </h3>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Name and email */}
+              <div className="grid md:grid-cols-2 md:gap-6">
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="name"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
+                    type="text"
+                    id="name"
+                    placeholder="Full name"
+                    {...register("name")}
+                  />
+                  {errors.name && (
                     <p className="text-red-500 text-xs italic">
-                      {errors.phone?.message}
+                      Full name is required
+                    </p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    id="email"
+                    type="email"
+                    placeholder="johndoe@example.com"
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs italic">
+                      Email is required
                     </p>
                   )}
                 </div>
               </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="house"
-                >
-                  H. No
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="house"
-                  type="text"
-                  placeholder="Ex. 123"
-                  {...register("house")}
-                />
-                {errors.house && (
-                  <p className="text-red-500 text-xs italic">
-                    {errors.house?.message}
-                  </p>
-                )}
+              {/* Phone number and house no */}
+              <div className="grid md:grid-cols-2 md:gap-6">
+                <div className="mb-4 flex flex-col">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="phone-input"
+                  >
+                    Phone number
+                  </label>
+                  <div className="">
+                    <div className="flex items-center w-full">
+                      <div
+                        id="dropdown-phone-button"
+                        data-dropdown-toggle="dropdown-phone"
+                        className="flex-shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
+                      >
+                        <svg
+                          fill="none"
+                          aria-hidden="true"
+                          className="h-4 w-4 me-2"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 512 512"
+                          id="india"
+                        >
+                          <path
+                            fill="#f0f0f0"
+                            d="M0 85.337h512v341.326H0z"
+                          ></path>
+                          <path
+                            fill="#ff9811"
+                            d="M0 85.337h512v113.775H0z"
+                          ></path>
+                          <path
+                            fill="#6da544"
+                            d="M0 312.888h512v113.775H0z"
+                          ></path>
+                          <circle
+                            cx="256"
+                            cy="256"
+                            r="43.896"
+                            fill="#0052b4"
+                          ></circle>
+                          <circle
+                            cx="256"
+                            cy="256"
+                            r="27.434"
+                            fill="#f0f0f0"
+                          ></circle>
+                          <path
+                            fill="#0052b4"
+                            d="m256 222.146 8.464 19.195 20.855-2.268L272.927 256l12.392 16.927-20.855-2.268L256 289.854l-8.464-19.195-20.855 2.268L239.073 256l-12.392-16.927 20.855 2.268z"
+                          ></path>
+                        </svg>
+                        +91{" "}
+                      </div>
+                      <input
+                        type="text"
+                        id="phone-input"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                        {...register("phone")}
+                        placeholder="123-456-7890"
+                      />
+                    </div>
+                    {errors.address && (
+                      <p className="text-red-500 text-xs italic">
+                        {errors.phone?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="house"
+                  >
+                    H. No
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    id="house"
+                    type="text"
+                    placeholder="Ex. 123"
+                    {...register("house")}
+                  />
+                  {errors.house && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.house?.message}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Address and zip code */}
-            <div className="grid md:grid-cols-2 md:gap-6">
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="address"
-                >
-                  Full Address
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="address"
-                  type="text"
-                  placeholder="Full address"
-                  {...register("address")}
-                />
-                {errors.address && (
-                  <p className="text-red-500 text-xs italic">
-                    {errors.address.message}
-                  </p>
-                )}
+              {/* Address and zip code */}
+              <div className="grid md:grid-cols-2 md:gap-6">
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="address"
+                  >
+                    Full Address
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    id="address"
+                    type="text"
+                    placeholder="Full address"
+                    {...register("address")}
+                  />
+                  {errors.address && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.address.message}
+                    </p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 font-medium mb-2"
+                    htmlFor="zipcode"
+                  >
+                    Zip Code
+                  </label>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    id="zipcode"
+                    type="text"
+                    placeholder="Zip code"
+                    {...register("zip")}
+                  />
+                  {errors.zip && (
+                    <p className="text-red-500 text-xs italic">
+                      {errors.zip.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="mb-4">
-                <label
-                  className="block text-gray-700 font-medium mb-2"
-                  htmlFor="zipcode"
-                >
-                  Zip Code
-                </label>
-                <input
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="zipcode"
-                  type="text"
-                  placeholder="Zip code"
-                  {...register("zip")}
-                />
-                {errors.zip && (
-                  <p className="text-red-500 text-xs italic">
-                    {errors.zip.message}
-                  </p>
-                )}
-              </div>
-            </div>
 
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none"
-            >
-              Pay now
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none"
+              >
+                Pay now
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -3,10 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { HotelType } from "@/types";
 import { FaStar } from "react-icons/fa6";
 import { TbAirConditioning } from "react-icons/tb";
-import { RiDeleteBinFill } from "react-icons/ri";
-import { FaDownload } from "react-icons/fa";
-
-const LinkedPage = () => {
+const Orders = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   console.log("🚀 ~ LinkedPage ~ selected:", selected);
@@ -47,18 +44,12 @@ const LinkedPage = () => {
   return (
     <div>
       <h3 className="text-gray-700 my-5 font-bold ml-1 text-xl lg:text-2xl flex gap-3 items-center">
-        <span className="underline">Liked products</span>
+        <span className="underline">All orders</span>
 
         <div className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-teal-600 border-2 border-white rounded-full">
           {selected.length}
         </div>
       </h3>
-      {selected.length > 0 && (
-        <div className="my-1 flex w-full justify-end pr-5 gap-4 transition-all ease-in-out ">
-          <FaDownload className="text-blue-600 cursor-pointer" size={20} />
-          <RiDeleteBinFill className="cursor-pointer text-red-600" size={20} />
-        </div>
-      )}
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -92,9 +83,6 @@ const LinkedPage = () => {
               </th>
               <th scope="col" className="px-6 py-3">
                 Price
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
               </th>
             </tr>
           </thead>
@@ -166,18 +154,6 @@ const LinkedPage = () => {
                     <td className="px-6 py-4">
                       {/* @ts-ignore */}₹ {hotel?.roomType[0]?.deluxe}
                     </td>
-                    <td className="flex items-center px-6 py-4">
-                      {selected.length < 0 && (
-                        <>
-                          <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                            <FaDownload />
-                          </button>
-                          <button className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">
-                            <RiDeleteBinFill color="red" />
-                          </button>
-                        </>
-                      )}
-                    </td>
                   </tr>
                 );
               })}
@@ -188,4 +164,4 @@ const LinkedPage = () => {
   );
 };
 
-export default LinkedPage;
+export default Orders;
