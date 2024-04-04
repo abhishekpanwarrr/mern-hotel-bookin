@@ -1,4 +1,5 @@
 import Hotel from "../model/Hotel.js";
+import User from "../model/User.js";
 
 const addHotel = async (req, res) => {
   try {
@@ -46,4 +47,34 @@ const fetchSingleHotel = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
-export { addHotel, fetchAllHotels, fetchSingleHotel };
+
+const addLikedHotel = async (req, res) => {
+  try {
+    const { userId, hotelId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ status: 404, msg: "User not found" });
+    }
+
+    let msg = "";
+    if (user.likedHotel.includes(hotelId)) {
+      user.likedHotel = user.likedHotel.filter((id) => id !== hotelId);
+      msg = "Hotel removed from liked hotels";
+    } else {
+      // Hotel not liked, add it
+      user.likedHotel.push(hotelId);
+      msg = "Hotel added to liked hotels";
+    }
+
+    await user.save();
+    res.status(200).json({
+      status: 200,
+      msg: `${msg} successfully`,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
+};
+
+export { addHotel, fetchAllHotels, fetchSingleHotel, addLikedHotel };

@@ -24,6 +24,9 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 10,
     },
+    likedHotel: {
+      type: Array,
+    },
   },
   {
     timestamps: true,
