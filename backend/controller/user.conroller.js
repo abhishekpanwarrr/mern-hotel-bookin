@@ -48,13 +48,11 @@ const login = async (req, res) => {
 const getUserDetails = async (req, res) => {
   try {
     const userId = req.params.userId;
-    console.log("🚀 ~ getUserDetails ~ userId:", userId)
     const user = await User.findById({ _id: userId });
     return res
       .status(200)
       .json({ status: 200, msg: "User found successfully", user });
   } catch (error) {
-    console.log("🚀 ~ getUserDetails ~ error:", error)
     res.status(500).json({ msg: error.message });
   }
 };
