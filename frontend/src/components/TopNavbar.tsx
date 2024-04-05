@@ -6,6 +6,7 @@ import { CgProfile } from "react-icons/cg";
 import { TbLogout } from "react-icons/tb";
 import { Separator } from "@/components/ui/separator";
 import { BsFillDice6Fill } from "react-icons/bs";
+import Cookies from "js-cookie";
 import {
   Sheet,
   SheetContent,
@@ -18,16 +19,32 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface Props {
+  openLogin: boolean;
+  open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  setOpenLogin: Dispatch<SetStateAction<boolean>>;
 }
-const TopNavbar = ({ setOpen }: Props) => {
+const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
+  const [user, setUser] = useState<any>({});
+
+  useEffect(() => {
+    (async () => {
+      const user = Cookies.get("hotelUser");
+      if (user) {
+        setUser(JSON.parse(user));
+      }
+    })();
+  }, [open, openLogin]);
+
+  const handleLogout = () => {
+    Cookies.remove("hotelUser");
+    window.location.reload()
+  };
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 w-full z-10">
       <Sheet>
@@ -170,7 +187,13 @@ const TopNavbar = ({ setOpen }: Props) => {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent className="bg-gray-800 text-white min-w-[12rem] bottom-0 outline-none">
-                    <DropdownMenuItem>Guest</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      {user?.fullName ? (
+                        user?.fullName
+                      ) : (
+                        <span onClick={() => setOpenLogin(true)}>Login</span>
+                      )}
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setOpen(true)}>
                       Profile
                     </DropdownMenuItem>
@@ -180,13 +203,20 @@ const TopNavbar = ({ setOpen }: Props) => {
                     />
                     <DropdownMenuItem>Orders</DropdownMenuItem>
                     <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <Separator
-                      className="bg-gray-500"
-                      orientation="horizontal"
-                    />
-                    <DropdownMenuItem className="gap-2">
-                      <TbLogout /> Logout
-                    </DropdownMenuItem>
+                    {user?.fullName && (
+                      <>
+                        <Separator
+                          className="bg-gray-500"
+                          orientation="horizontal"
+                        />
+                        <DropdownMenuItem
+                          className="gap-2"
+                          onClick={handleLogout}
+                        >
+                          <TbLogout /> Logout
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </li>

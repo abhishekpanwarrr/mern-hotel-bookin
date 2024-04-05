@@ -1,6 +1,5 @@
 import { HotelType } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -69,13 +68,6 @@ const Hotel = ({
       hotelId: id,
     });
   };
-  // console.log("mutate", mutation.data);
-  // if (mutation.data) {
-  //   toast(mutation?.data?.msg);
-  // }
-  // if(mutation.data){
-  //   return toast(mutation.data)
-  // }
   return (
     <Link
       to={`/hotel/${item?._id}`}
