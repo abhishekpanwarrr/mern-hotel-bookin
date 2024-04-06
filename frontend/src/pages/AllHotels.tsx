@@ -1,6 +1,5 @@
 import Hotel from "@/components/Hotel";
 import Loader from "@/components/Loader";
-import Skeleton from "@/components/Skeleton";
 import { HotelType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";

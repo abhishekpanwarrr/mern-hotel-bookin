@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Hotel from "../Hotel";
-import Skeleton from "../Skeleton";
 import Loader from "../Loader";
 
 const RecommendedHotels = () => {
