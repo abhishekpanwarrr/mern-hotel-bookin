@@ -7,7 +7,7 @@ const RecommendedHotels = () => {
   const [hotels, setHotels] = useState([]);
   const fetchAllHotels = async () => {
     return (
-      await fetch("http://localhost:8000/api/v1/hotel", { method: "GET" })
+      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", { method: "GET" })
     ).json();
   };
 

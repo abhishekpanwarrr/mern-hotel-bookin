@@ -13,7 +13,7 @@ const Orders = () => {
     const userData = Cookies.get("hotelUser");
     const parsedData = JSON.parse(userData!);
     return (
-      await fetch(`http://localhost:8000/api/v1/payment/${parsedData?._id}`, {
+      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedData?._id}`, {
         method: "GET",
       })
     ).json();

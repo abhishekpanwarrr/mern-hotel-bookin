@@ -30,7 +30,7 @@ const LoginPage = ({ openLogin, isLogin, setIsLogin, setOpenLogin }: Props) => {
   });
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await fetch("http://localhost:8000/api/v1/users/login", {
+      const response = await fetch("https://hotel-backend-taupe.vercel.app/api/v1/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

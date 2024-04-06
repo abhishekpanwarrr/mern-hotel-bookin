@@ -28,7 +28,7 @@ const Hotel = ({
   const fetchAllHotels = async () => {
     return (
       await fetch(
-        "http://localhost:8000/api/v1/users/660d50fda80847a6bb79f1f7",
+        "https://hotel-backend-taupe.vercel.app/api/v1/users/660d50fda80847a6bb79f1f7",
         { method: "GET" }
       )
     ).json();
@@ -42,7 +42,7 @@ const Hotel = ({
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const response = await fetch("http://localhost:8000/api/v1/hotel/liked", {
+      const response = await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel/liked", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

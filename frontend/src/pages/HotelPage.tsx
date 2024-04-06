@@ -53,7 +53,7 @@ const HotelPage = () => {
   const params = useParams();
   const getHotelData = async () => {
     return (
-      await fetch(`http://localhost:8000/api/v1/hotel/hotel/${params.id}`, {
+      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/hotel/hotel/${params.id}`, {
         method: "GET",
       })
     ).json();
@@ -108,7 +108,7 @@ const HotelPage = () => {
       return;
     }
     const result = await axios.post(
-      "http://localhost:8000/api/v1/payment/orders",
+      "https://hotel-backend-taupe.vercel.app/api/v1/payment/orders",
       {
         // @ts-ignore
         amount: hotelData?.room?.price,
@@ -155,7 +155,7 @@ const HotelPage = () => {
         };
 
         const result = await axios.post(
-          "http://localhost:8000/api/v1/payment/verify",
+          "https://hotel-backend-taupe.vercel.app/api/v1/payment/verify",
           data
         );
         if (result.status === 200) {

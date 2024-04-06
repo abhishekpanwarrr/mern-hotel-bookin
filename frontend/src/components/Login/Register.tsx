@@ -34,7 +34,7 @@ const Register = ({ openLogin, isLogin, setIsLogin, setOpenLogin }: Props) => {
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       const response = await fetch(
-        "http://localhost:8000/api/v1/users/register",
+        "https://hotel-backend-taupe.vercel.app/api/v1/users/register",
         {
           method: "POST",
           headers: {
