@@ -23,6 +23,9 @@ app.use(
 );
 
 // ROUTES
+app.get("/", (rex, res) => {
+  res.send("Welcome to Hotel Booking System API");
+});
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/hotel", hotelRoutes);
 app.use("/api/v1/payment", paymentRouter);
