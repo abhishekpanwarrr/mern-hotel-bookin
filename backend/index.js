@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 import userRoutes from "./routes/user.routes.js";
 import hotelRoutes from "./routes/hotel.routes.js";
-
+import paymentRouter from "./routes/payments.routes.js";
 // CONFIG
 
 dotenv.config();
@@ -25,7 +25,7 @@ app.use(
 // ROUTES
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/hotel", hotelRoutes);
-
+app.use("/api/v1/payment", paymentRouter);
 // MONGOOSE SETUP
 const connectDB = async () => {
   try {

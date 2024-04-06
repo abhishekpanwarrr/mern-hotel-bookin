@@ -13,10 +13,10 @@ import {
 import Layout from "./Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import NotFound from "./components/NotFound.tsx";
-import ProductPage from "./pages/ProductPage.tsx";
-import AllRooms from "./pages/AllRooms.tsx";
 import LinkedPage from "./pages/LinkedPage.tsx";
 import Orders from "./pages/Orders.tsx";
+import HotelPage from "./pages/HotelPage.tsx";
+import AllHotels from "./pages/AllHotels.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,8 +24,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<HomePage />} />
-      <Route path="hotel/:id" element={<ProductPage />} />
-      <Route path="hotels" element={<AllRooms />} />
+      <Route path="hotel/:id" element={<HotelPage />} />
+      <Route path="hotels" element={<AllHotels />} />
       <Route path="orders" element={<Orders />} />
       <Route path="liked" element={<LinkedPage />} />
       <Route path="*" element={<NotFound />} />

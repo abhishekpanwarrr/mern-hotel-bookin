@@ -9,7 +9,7 @@ import { FaDownload } from "react-icons/fa";
 const LinkedPage = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  console.log("🚀 ~ LinkedPage ~ selected:", selected);
+
   const fetchAllHotels = async () => {
     return (
       await fetch("http://localhost:8000/api/v1/hotel", { method: "GET" })
@@ -26,7 +26,6 @@ const LinkedPage = () => {
     }
   }, [data]);
   const handleCheckBox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
-    console.log("e", e.target.checked);
     if (e.target.checked === true) {
       setSelected((prev) => [...prev, id]);
     } else {
@@ -50,10 +49,10 @@ const LinkedPage = () => {
         <span className="underline">Liked products</span>
 
         <div className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-teal-600 border-2 border-white rounded-full">
-          {selected.length}
+          {selected?.length}
         </div>
       </h3>
-      {selected.length > 0 && (
+      {selected?.length > 0 && (
         <div className="my-1 flex w-full justify-end pr-5 gap-4 transition-all ease-in-out ">
           <FaDownload className="text-blue-600 cursor-pointer" size={20} />
           <RiDeleteBinFill className="cursor-pointer text-red-600" size={20} />

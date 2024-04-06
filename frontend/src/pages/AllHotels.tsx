@@ -1,11 +1,10 @@
 import Hotel from "@/components/Hotel";
-import Product from "@/components/Hotel";
 import Skeletorn from "@/components/Skeletorn";
 import { HotelType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-const AllRooms = () => {
+const AllHotels = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const fetchAllHotels = async () => {
     return (
@@ -56,4 +55,4 @@ const AllRooms = () => {
   );
 };
 
-export default AllRooms;
+export default AllHotels;

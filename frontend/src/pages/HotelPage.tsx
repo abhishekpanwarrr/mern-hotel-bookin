@@ -7,10 +7,19 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { HotelType } from "@/types";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import axios from "axios";
+//  @ts-ignore
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
+// @ts-ignore
+import { v4 as uuidv4 } from "uuid";
 const schema = yup
   .object({
-    name: yup.string().required("Full name is required"),
+    room: yup.string().required("Room is required"),
+    fullName: yup.string().required("Full name is required"),
     address: yup.string().min(10).required("Address is required"),
     email: yup.string().email("Invalid Email").required("Email is required"),
     zip: yup
@@ -33,12 +42,14 @@ const schema = yup
       )
       .required("Phone Number is required"),
     house: yup.number().required("House no is required"),
+    checkInDate: yup.date().required("Check-in Date is required"),
+    checkOutDate: yup.date().required("Check-out Date is required"),
   })
   .required();
 
 type FormData = yup.InferType<typeof schema>;
 
-const ProductPage = () => {
+const HotelPage = () => {
   const params = useParams();
   const getHotelData = async () => {
     return (
@@ -67,7 +78,116 @@ const ProductPage = () => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data: FormData) => console.log(data);
+
+  function loadScript(src: any) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  async function displayRazorpay(hotelData: FormData) {
+    const userData = Cookies.get("hotelUser");
+    const parsedUser = JSON.parse(userData);
+    console.log("parsedUSerId", parsedUser?._id);
+
+    console.log("🚀 ~ displayRazorpay ~ data:", data);
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+    const result = await axios.post(
+      "http://localhost:8000/api/v1/payment/orders",
+      {
+        // @ts-ignore
+        amount: hotelData?.room?.price,
+        orderId: uuidv4(),
+      }
+    );
+
+    if (!result) {
+      alert("Server error. Are you online?");
+      return;
+    }
+    const { amount, id: order_id, currency } = result.data.data;
+
+    const options = {
+      key: import.meta.env.RAZOR_KEY,
+      amount: amount,
+      currency: currency,
+      name: "Abhishek Hotel",
+      description: "Payment for hotel booking",
+      order_id: order_id,
+      handler: async function (response: any) {
+        const data = {
+          totalAmount: amount,
+          orderItems: {
+            hotelName: hotel?.hotelName,
+            // @ts-ignore
+            price: hotelData?.room?.price,
+            // @ts-ignore
+            roomType: hotelData?.room.type,
+            userName: hotelData?.fullName,
+            userEmail: hotelData?.email,
+            userPhone: hotelData?.phone,
+            userHouse: hotelData?.house,
+            userAddress: hotelData?.address,
+            userZip: hotelData?.zip,
+            checkInDate:hotelData?.checkInDate,
+            checkOutDate:hotelData?.checkOutDate,
+          },
+          userId: parsedUser?._id,
+          orderCreationId: order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpayOrderId: response.razorpay_order_id,
+          razorpaySignature: response.razorpay_signature,
+        };
+
+        const result = await axios.post(
+          "http://localhost:8000/api/v1/payment/verify",
+          data
+        );
+        if (result.status === 200) {
+          return toast.success("Order placed successfully");
+        } else {
+          alert("Something went wrong please connect with us.");
+        }
+      },
+      notes: {
+        address: "Abhishek Corporate Office",
+      },
+      theme: {
+        color: "#00353F",
+      },
+    };
+    // @ts-ignore
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  }
+
+  const onSubmit = async (data: FormData) => {
+    console.log("🚀 ~ onSubmit ~ data:", data)
+    const userToken = Cookies.get("hotelToken");
+    if (!userToken) {
+      return toast.error("Please login first");
+    }
+    const roomData = JSON.parse(data.room);
+    console.log("🚀 ~ onSubmit ~ roomData:", roomData);
+    data.room = roomData;
+    await displayRazorpay(data);
+  };
+  const today = new Date();
 
   return (
     <div className="w-full">
@@ -228,25 +348,104 @@ const ProductPage = () => {
               Check out details
             </h3>
             <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Room Type */}
+              <select
+                id="rooms"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                {...register("room")}
+              >
+                <option selected>Choose room Type</option>
+                {hotel?.roomType?.map((room, index) => {
+                  const roomType = Object.keys(room)[0];
+                  const roomPrice = Object.values(room)[0];
+                  const value = JSON.stringify({
+                    type: roomType,
+                    price: roomPrice,
+                  }); // Create the value here
+                  return (
+                    <option key={index} value={value}>
+                      {roomType}
+                    </option>
+                  );
+                })}
+              </select>
+              {errors.room && (
+                <p className="text-red-500 text-xs italic">
+                  {errors.room?.message}
+                </p>
+              )}
+              {/* Check-in Date */}
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 font-medium mb-2"
+                  htmlFor="checkInDate"
+                >
+                  Check-in Date
+                </label>
+                <input
+                  type="date"
+                  id="checkInDate"
+                  min={today.toISOString().split("T")[0]}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  {...register("checkInDate")}
+                />
+                {errors.checkInDate && (
+                  <p className="text-red-500 text-xs italic">
+                    {errors.checkInDate.message}
+                  </p>
+                )}
+              </div>
+              {/* Check-out Date */}
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 font-medium mb-2"
+                  htmlFor="checkOutDate"
+                >
+                  Check-out Date
+                </label>
+                {/* <DatePicker
+                  id="checkOutDate"
+                  selected={today}
+                  dateFormat="MM/dd/yyyy"
+                  onChange={(date: any) => {
+                    setValue("checkOutDate", date, { shouldValidate: true });
+                  }}
+                  minDate={today}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  // {...register("checkOutDate")}
+                /> */}
+                <input
+                  type="date"
+                  id="checkOutDate"
+                  min={today.toISOString().split("T")[0]}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  {...register("checkOutDate")}
+                />
+                {errors.checkOutDate && (
+                  <p className="text-red-500 text-xs italic">
+                    {errors.checkOutDate.message}
+                  </p>
+                )}
+              </div>
               {/* Name and email */}
               <div className="grid md:grid-cols-2 md:gap-6">
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 font-medium mb-2"
-                    htmlFor="name"
+                    htmlFor="fullName"
                   >
                     Full Name
                   </label>
                   <input
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                     type="text"
-                    id="name"
+                    id="fullName"
                     placeholder="Full name"
-                    {...register("name")}
+                    {...register("fullName")}
                   />
-                  {errors.name && (
+                  {errors.fullName && (
                     <p className="text-red-500 text-xs italic">
-                      Full name is required
+                      {errors.fullName?.message}
                     </p>
                   )}
                 </div>
@@ -421,4 +620,4 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default HotelPage;
