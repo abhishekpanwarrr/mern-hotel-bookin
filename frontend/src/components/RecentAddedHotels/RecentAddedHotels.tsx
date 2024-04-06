@@ -2,16 +2,19 @@ import { HotelType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Loader from "../Loader";
 
 const RecentAddedHotels = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const fetchAllHotels = async () => {
     return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", { method: "GET" })
+      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
+        method: "GET",
+      })
     ).json();
   };
 
-  const { data, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["recentAddedHotels"],
     queryFn: fetchAllHotels,
   });
@@ -24,17 +27,29 @@ const RecentAddedHotels = () => {
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
-        Error fetching data
+        Something went wrong. Please try again later
       </h3>
     );
   }
   return (
     <div className="w-1/2 p-5 hidden lg:block">
-      <p className="text-base font-bold mb-2 text-gray-700">Recent searches</p>
+      <p className="text-base font-bold mb-2 text-gray-700">
+        Recently added hotels
+      </p>
       <div className="flex flex-col gap-3">
-        {hotels?.slice(0, 4)?.map((hotel: HotelType) => (
-          <Hotel key={hotel?._id} hotel={hotel} />
-        ))}
+        {isLoading ? (
+          <div className="flex flex-col md:flex-row gap-3 my-4">
+            {[1, 2, 3].map((_, index) => (
+              <Loader key={index} />
+            ))}
+          </div>
+        ) : (
+          hotels
+            ?.slice(0, 4)
+            ?.map((hotel: HotelType) => (
+              <Hotel key={hotel?._id} hotel={hotel} />
+            ))
+        )}
       </div>
     </div>
   );

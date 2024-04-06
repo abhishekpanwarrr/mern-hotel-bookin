@@ -8,19 +8,21 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Skeletorn from "../Skeletorn";
 import Hotel from "../Hotel";
+import Loader from "../Loader";
 
 const NewHotels = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const fetchAllHotels = async () => {
     return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", { method: "GET" })
+      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
+        method: "GET",
+      })
     ).json();
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["recommendedHotels"],
+    queryKey: ["newhotels"],
     queryFn: fetchAllHotels,
   });
   useEffect(() => {
@@ -32,17 +34,17 @@ const NewHotels = () => {
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
-        Error fetching data
+        Something went wrong. Please try again later
       </h3>
     );
   }
   return (
     <div className="px-5">
-      <h3 className="pl-5 font-semibold text-lg my-2">New Items in stock</h3>
+      <h3 className="pl-5 font-semibold text-lg my-2">Newly added hotels</h3>
       {isLoading ? (
-        <div className="flex gap-3 my-5">
+        <div className="flex flex-row gap-3 my-5 overflow-hidden">
           {[1, 2, 3, 4, 5].map((_, index) => (
-            <Skeletorn key={index} />
+            <Loader key={index} />
           ))}
         </div>
       ) : (
@@ -52,7 +54,7 @@ const NewHotels = () => {
               hotels?.reverse().map((item: HotelType) => (
                 <CarouselItem
                   key={item?._id}
-                  className="basis-1/2 xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                  className="w-full xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
                 >
                   <Hotel className={"h-[100%]"} item={item} />
                 </CarouselItem>

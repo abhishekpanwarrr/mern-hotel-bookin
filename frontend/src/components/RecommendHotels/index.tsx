@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import Skeletorn from "../Skeletorn";
 import { useQuery } from "@tanstack/react-query";
 import Hotel from "../Hotel";
+import Skeleton from "../Skeleton";
+import Loader from "../Loader";
 
 const RecommendedHotels = () => {
   const [hotels, setHotels] = useState([]);
   const fetchAllHotels = async () => {
     return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", { method: "GET" })
+      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
+        method: "GET",
+      })
     ).json();
   };
 
@@ -24,17 +27,19 @@ const RecommendedHotels = () => {
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
-        Error fetching data
+        Something went wrong. Please try again later
       </h3>
     );
   }
   return (
     <>
-      <h3 className="my-4 text-base font-semibold px-2 underline">Recommended hotels</h3>
+      <h3 className="my-4 text-base font-semibold px-2 underline">
+        Recommended hotels
+      </h3>
       {isLoading ? (
-        <div className="flex gap-3 my-4">
+        <div className="flex flex-col md:flex-row gap-3 my-4">
           {[1, 2, 3].map((_, index) => (
-            <Skeletorn key={index} />
+            <Loader key={index} />
           ))}
         </div>
       ) : (

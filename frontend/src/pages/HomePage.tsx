@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import { Suspense, lazy } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 const RecentAddedHotels = lazy(
@@ -14,7 +15,7 @@ const HomePageHero = lazy(
 );
 const User = lazy(() => import("@/components/User"));
 
-const LoadingFallback = () => <div>Loading...</div>;
+const LoadingFallback = () => <Loading />
 
 const HomePage = () => {
   return (

@@ -5,6 +5,7 @@ import { FaStar } from "react-icons/fa6";
 import { TbAirConditioning } from "react-icons/tb";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { FaDownload } from "react-icons/fa";
+import Skeleton from "@/components/Skeleton";
 
 const LinkedPage = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
@@ -12,7 +13,9 @@ const LinkedPage = () => {
 
   const fetchAllHotels = async () => {
     return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", { method: "GET" })
+      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
+        method: "GET",
+      })
     ).json();
   };
 
@@ -35,12 +38,18 @@ const LinkedPage = () => {
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
-        Error fetching data
+        Something went wrong. Please try again later
       </h3>
     );
   }
   if (isLoading) {
-    return <h3 className="text-center font-bold text-red-600">Loading....</h3>;
+    return (
+      <div className="flex flex-col gap-3">
+        {[1, 2, 3, 4].map((_, index) => (
+          <Skeleton key={index} />
+        ))}
+      </div>
+    );
   }
 
   return (

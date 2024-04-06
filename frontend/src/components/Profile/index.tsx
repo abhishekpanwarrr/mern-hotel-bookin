@@ -13,7 +13,6 @@ const Profile = ({ open, setOpen }: Props) => {
   const [user, setUser] = useState<any>({});
   useEffect(() => {
     (async () => {
-      console.log("🚀 ~ Profile ~ open:", open)
       const user = Cookies.get("hotelUser");
       if (user) {
         setUser(JSON.parse(user));

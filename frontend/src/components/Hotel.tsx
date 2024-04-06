@@ -38,17 +38,19 @@ const Hotel = ({
     queryKey: ["userDetails"],
     queryFn: fetchAllHotels,
   });
-  console.log("🚀 ~ data:", data);
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const response = await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel/liked", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        "https://hotel-backend-taupe.vercel.app/api/v1/hotel/liked",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
       const responseData = await response.json();
       return responseData; //
     },
@@ -93,13 +95,13 @@ const Hotel = ({
         </div>
       </div>
       <div className="px-3 pb-5">
-        <p className="text-lg font-semibold text-gray-700 tracking-tight truncate">
+        <p className="text-base my-2 md:my-0 md:text-lg font-semibold text-gray-700 tracking-tight truncate">
           {item?.hotelName || "Opula haven hotel"}
         </p>
-        <p className="text-sm font-normal text-gray-400 mb-4">
+        <p className="text-xs md:text-sm font-normal text-gray-400 mb-4 ">
           {item?.address || "Rewari,Haryana"}
         </p>
-        <div className="flex items-center justify-between">
+        <div className="flex md:items-center gap-1 flex-col md:flex-row justify-between">
           <span className="text-base font-bold">
             {/* @ts-ignore */}
             <span className="font-bold">₹{item?.roomType[0]?.deluxe}</span>{" "}

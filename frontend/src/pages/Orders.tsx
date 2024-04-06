@@ -7,14 +7,16 @@ import Cookies from "js-cookie";
 const Orders = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  console.log("🚀 ~ LinkedPage ~ selected:", selected);
   const fetchAllHotels = async () => {
     const userData = Cookies.get("hotelUser");
     const parsedData = JSON.parse(userData!);
     return (
-      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedData?._id}`, {
-        method: "GET",
-      })
+      await fetch(
+        `https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedData?._id}`,
+        {
+          method: "GET",
+        }
+      )
     ).json();
   };
 
@@ -24,17 +26,11 @@ const Orders = () => {
   });
   useEffect(() => {
     if (data) {
-      console.log("🚀 ~ useEffect ~ data:", data);
-      const orderItemsArray = data?.data?.map(
-        (item:any) => item?.orderItems
-      );
-
-      console.log("orderItemsArray", orderItemsArray);
+      const orderItemsArray = data?.data?.map((item: any) => item?.orderItems);
       setHotels(orderItemsArray);
     }
   }, [data]);
   const handleCheckBox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
-    console.log("e", e.target.checked);
     if (e.target.checked === true) {
       setSelected((prev) => [...prev, id]);
     } else {
@@ -44,7 +40,7 @@ const Orders = () => {
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
-        Error fetching data
+        Something went wrong. Please try again later
       </h3>
     );
   }
@@ -99,21 +95,7 @@ const Orders = () => {
           </thead>
           <tbody>
             {hotels?.length > 0 &&
-              hotels?.map((hotel: HotelType,index) => {
-                // const calculateAverageRating = () => {
-                //   let sum = 0;
-                //   let totalCount = 0;
-
-                //   hotel?.ratings.forEach((ratingObj: any) => {
-                //     const ratingValue = parseInt(Object.keys(ratingObj)[0]);
-                //     const count = ratingObj[ratingValue];
-                //     sum += ratingValue * count;
-                //     totalCount += count;
-                //   });
-                //   const averageRating = sum / totalCount;
-                //   return averageRating.toFixed(2);
-                // };
-                // const averageRating = calculateAverageRating();
+              hotels?.map((hotel: HotelType, index) => {
                 return (
                   <tr
                     key={hotel?._id}
@@ -150,18 +132,11 @@ const Orders = () => {
                     >
                       {hotel?.hotelName}
                     </th>
-                    <td className="px-6 py-4 flex items-center gap-2">
-                      <FaStar color="yellow" /> 
-                      {/* {averageRating} */}
+                    <td className="px-6 py-4 mt-5 flex items-center gap-2">
+                      <FaStar color="yellow" /> 3
                     </td>
                     <td className="px-6 py-4">Hotel</td>
                     <td className="px-6 py-4 capitalize">
-                      {/* @ts-ignore */}
-                      {/* {hotel?.ameneties[0]?.AC ? (
-                        <div className="flex items-center gap-1">
-                          <TbAirConditioning /> Yes
-                        </div>
-                      ) : null} */}
                       {/* @ts-ignore */}
                       {hotel?.roomType}
                     </td>

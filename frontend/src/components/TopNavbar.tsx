@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 interface Props {
   openLogin: boolean;
@@ -43,8 +44,9 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
 
   const handleLogout = () => {
     Cookies.remove("hotelUser");
-    window.location.reload()
+    window.location.reload();
   };
+
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 w-full z-10">
       <Sheet>
@@ -60,7 +62,7 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
             />
           </Link>
           <div className="flex md:order-1">
-            <div className="relative md:block md:min-w-[550px]">
+            <div className="hidden md:relative md:block md:min-w-[550px]">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -224,30 +226,79 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
           </div>
         </div>
         {/* @ts-ignore */}
-        <SheetContent className="bg-black text-white">
+        <SheetContent className="bg-black text-white border-0">
           <SheetHeader>
-            <SheetTitle>Are you absolutely sure?</SheetTitle>
+            <SheetTitle className="underline">HOTEL TAJ</SheetTitle>
             <SheetDescription>
-              <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0  dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 items-center">
-                <li>
-                  <Link
-                    to="/"
-                    className="block py-2 px-3 text-white"
-                    aria-current="page"
+              <div className="relative md:block md:min-w-[550px]">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
                   >
-                    <FiHome />
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/" className="block py-2 px-3 text-white">
-                    <FaRegHeart />
-                  </Link>
-                </li>
-                <li>
-                  <Link to={"/"} className=" block py-2 px-3text-white ">
-                    <IoNotificationsOutline />
-                  </Link>
-                </li>
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                  <span className="sr-only">Search icon</span>
+                </div>
+                <input
+                  type="text"
+                  id="search-navbar"
+                  className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search..."
+                />
+              </div>
+              <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-2 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 items-center justify-start">
+                <Link
+                  to="/"
+                  className="flex w-full border items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 dark:text-white rounded "
+                  aria-current="page"
+                >
+                  <FiHome />
+                  Home
+                </Link>
+                <Link
+                  to="/liked"
+                  className="flex w-full border items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white"
+                >
+                  <FaRegHeart />
+                  Saved hotels
+                </Link>
+                <Link
+                  to={"/orders"}
+                  className="flex w-full border items-center gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white "
+                >
+                  <IoNotificationsOutline />
+                  Orders
+                </Link>
+                <Link
+                  to={"/hotels"}
+                  className="flex w-full items-center border gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white "
+                >
+                  <BsFillDice6Fill />
+                  All hotels
+                </Link>
+                <Button className="flex w-full mt-4 items-center border gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white ">
+                  {user?.fullName ? (
+                    user?.fullName
+                  ) : (
+                    <span onClick={() => setOpenLogin(true)}>Login</span>
+                  )}
+                </Button>
+                <Button
+                  className="flex w-full mt-2 items-center border gap-3 hover:bg-blue-400 py-2 px-3 text-gray-900 rounded  dark:text-white "
+                  onClick={handleLogout}
+                >
+                  <TbLogout /> Logout
+                </Button>
               </ul>
             </SheetDescription>
           </SheetHeader>

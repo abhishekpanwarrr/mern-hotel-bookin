@@ -9,7 +9,6 @@ import Login from "./components/Login";
 function Layout() {
   const [open, setOpen] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
-  console.log("🚀 ~ Layout ~ openLogin:", openLogin);
   useEffect(() => {
     const handleScroll = (e: { preventDefault: () => void }) => {
       e.preventDefault();

@@ -272,7 +272,7 @@ const HotelPage = () => {
         <h3 className="text-center font-bold text-red-600">Loading....</h3>
       ) : isError ? (
         <h3 className="text-center font-bold text-red-600">
-          Error fetching data
+          Something went wrong. Please try again later
         </h3>
       ) : (
         <div className="flex md:flex-row flex-col justify-between gap-10">
