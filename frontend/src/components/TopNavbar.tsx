@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { FaRegHeart } from "react-icons/fa";
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import toast from "react-hot-toast";
 
 interface Props {
   openLogin: boolean;
@@ -32,6 +33,23 @@ interface Props {
 }
 const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
   const [user, setUser] = useState<any>({});
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    Cookies.remove("hotelUser");
+    window.location.reload();
+  };
+
+  const handleSearch = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    if (!searchQuery) {
+      return toast.error("Please enter to search");
+    }
+
+    navigate("/search", { state: { query: searchQuery } });
+  };
 
   useEffect(() => {
     (async () => {
@@ -41,25 +59,20 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
       }
     })();
   }, [open, openLogin]);
-
-  const handleLogout = () => {
-    Cookies.remove("hotelUser");
-    window.location.reload();
-  };
-
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 w-full z-10">
       <Sheet>
         <div className="flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             to={"/"}
-            className="flex items-center space-x-3 rtl:space-x-reverse"
+            className="flex items-center gap-1 space-x-3 rtl:space-x-reverse text-white"
           >
             <img
               src="https://img.freepik.com/premium-vector/hotel-logo-vector-illustration_969863-5246.jpg"
               className="h-8 rounded-full"
               alt="Flowbite Logo"
             />
+            HOTEL TAJ
           </Link>
           <div className="flex md:order-1">
             <div className="hidden md:relative md:block md:min-w-[550px]">
@@ -81,12 +94,21 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
                 </svg>
                 <span className="sr-only">Search icon</span>
               </div>
-              <input
-                type="text"
-                id="search-navbar"
-                className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search..."
-              />
+              <form className="" onSubmit={handleSearch}>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Search..."
+                />
+                <button
+                  type="submit"
+                  className="text-white absolute end-0 bottom-0 bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 "
+                >
+                  Search
+                </button>
+              </form>
             </div>
             <button
               data-collapse-toggle="navbar-search"
@@ -252,7 +274,7 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
                 <input
                   type="text"
                   id="search-navbar"
-                  className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                   placeholder="Search..."
                 />
               </div>

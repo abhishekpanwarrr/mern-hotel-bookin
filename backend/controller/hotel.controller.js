@@ -77,4 +77,24 @@ const addLikedHotel = async (req, res) => {
   }
 };
 
-export { addHotel, fetchAllHotels, fetchSingleHotel, addLikedHotel };
+const searchHotelsByAddress = async (req, res) => {
+  const { address } = req.query;
+  try {
+    const hotels = await Hotel.find({
+      address: { $regex: address, $options: "i" },
+    });
+    res
+      .status(200)
+      .json({ status: 200, msg: "Hotels fetched successfully", hotels });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+export {
+  addHotel,
+  fetchAllHotels,
+  fetchSingleHotel,
+  addLikedHotel,
+  searchHotelsByAddress,
+};

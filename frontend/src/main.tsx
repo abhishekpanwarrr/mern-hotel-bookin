@@ -17,6 +17,7 @@ import LinkedPage from "./pages/LinkedPage.tsx";
 import Orders from "./pages/Orders.tsx";
 import HotelPage from "./pages/HotelPage.tsx";
 import AllHotels from "./pages/AllHotels.tsx";
+import SearchResultPage from "./pages/SearchResultPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const router = createBrowserRouter(
       <Route path="hotels" element={<AllHotels />} />
       <Route path="orders" element={<Orders />} />
       <Route path="liked" element={<LinkedPage />} />
+      <Route path="search" element={<SearchResultPage />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )
