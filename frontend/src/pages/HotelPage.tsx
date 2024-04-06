@@ -95,6 +95,7 @@ const HotelPage = () => {
 
   async function displayRazorpay(hotelData: FormData) {
     const userData = Cookies.get("hotelUser");
+    // @ts-ignore
     const parsedUser = JSON.parse(userData);
     console.log("parsedUSerId", parsedUser?._id);
 

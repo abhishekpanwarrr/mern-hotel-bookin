@@ -11,7 +11,7 @@ const RecentAddedHotels = () => {
     ).json();
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["recentAddedHotels"],
     queryFn: fetchAllHotels,
   });

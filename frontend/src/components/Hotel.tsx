@@ -34,7 +34,7 @@ const Hotel = ({
     ).json();
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError } = useQuery({
     queryKey: ["userDetails"],
     queryFn: fetchAllHotels,
   });

@@ -163,7 +163,8 @@ const LinkedPage = () => {
                       ) : null}
                     </td>
                     <td className="px-6 py-4">
-                      {/* @ts-ignore */}₹ {hotel?.roomType[0]?.deluxe}
+                      {/* @ts-ignore */}
+                      ₹ {hotel?.roomType[0]?.deluxe}
                     </td>
                     <td className="flex items-center px-6 py-4">
                       {selected.length < 0 && (
