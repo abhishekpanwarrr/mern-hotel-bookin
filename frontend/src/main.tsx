@@ -18,6 +18,9 @@ import Orders from "./pages/Orders.tsx";
 import HotelPage from "./pages/HotelPage.tsx";
 import AllHotels from "./pages/AllHotels.tsx";
 import SearchResultPage from "./pages/SearchResultPage.tsx";
+import Privacy from "./pages/Privacy.tsx";
+import Terms from "./pages/Terms.tsx";
+import { Contact } from "./pages/Contact.tsx";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +33,9 @@ const router = createBrowserRouter(
       <Route path="orders" element={<Orders />} />
       <Route path="liked" element={<LinkedPage />} />
       <Route path="search" element={<SearchResultPage />} />
+      <Route path="privacy" element={<Privacy />} />
+      <Route path="terms" element={<Terms />} />
+      <Route path="contact" element={<Contact />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   )

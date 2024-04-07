@@ -17,6 +17,7 @@ const User = () => {
     day: "2-digit",
   };
   const formattedDate = currentDate.toLocaleDateString("en-US", options);
+
   return (
     <div className="flex justify-between gap-3 pt-5 mb-5">
       <div className="flex flex-col md:flex-row gap-4">
@@ -34,9 +35,12 @@ const User = () => {
               {parsedUser?.address ?? null}
             </p>
           )}
-          <p className="text-base text-gray-500 truncate dark:text-gray-400 bg-gray-200 px-4 py-2 rounded-full">
-            {formattedDate}
-          </p>
+          <div className="relative">
+            <p className=" text-base text-gray-500 truncate dark:text-gray-400 bg-gray-200 px-4 py-2 rounded-full">
+              {formattedDate}
+              <span className="-top-0.5 -end-2 absolute flex w-3 h-3 me-3 bg-indigo-500 rounded-full"></span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

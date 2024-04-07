@@ -49,6 +49,7 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
     }
 
     navigate("/search", { state: { query: searchQuery } });
+    return setSearchQuery("");
   };
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const TopNavbar = ({ open, openLogin, setOpen, setOpenLogin }: Props) => {
     })();
   }, [open, openLogin]);
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed top-0 w-full z-10">
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 sticky top-0 w-full z-10">
       <Sheet>
         <div className="flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
