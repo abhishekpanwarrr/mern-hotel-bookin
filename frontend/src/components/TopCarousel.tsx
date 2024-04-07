@@ -13,8 +13,6 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "./Loader";
 
 const TopCarousel = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const fetchAllHotels = async () => {
     return (
