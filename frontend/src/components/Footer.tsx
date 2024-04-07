@@ -18,17 +18,17 @@ const Footer = () => {
             </Link>
           </li>
           <li>
-            <Link to={"/"} className="hover:underline me-4 md:me-6">
+            <Link to={"/privacy"} className="hover:underline me-4 md:me-6">
               Privacy Policy
             </Link>
           </li>
           <li>
-            <Link to={"/"} className="hover:underline me-4 md:me-6">
-              Licensing
+            <Link to={"/terms"} className="hover:underline me-4 md:me-6">
+              Terms
             </Link>
           </li>
           <li>
-            <Link to={"/"} className="hover:underline">
+            <Link to={"/contact"} className="hover:underline">
               Contact
             </Link>
           </li>

@@ -6,12 +6,14 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const SearchResultPage = () => {
-  const {
-    state: { query },
-  } = useLocation();
+  const location = useLocation();
+  const query = location.state?.query;
   const [hotels, setHotels] = useState<HotelType[]>([]);
 
   const fetchData = async () => {
+    if (!query) {
+      return;
+    }
     const response = await fetch(
       `https://hotel-backend-taupe.vercel.app/api/v1/hotel/search?address=${query}`
     );
@@ -24,6 +26,7 @@ const SearchResultPage = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["filterData", query],
     queryFn: fetchData,
+    enabled: !!query,
   });
 
   useEffect(() => {

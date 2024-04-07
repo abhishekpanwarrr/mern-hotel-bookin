@@ -3,20 +3,28 @@ import { useQuery } from "@tanstack/react-query";
 import { HotelType } from "@/types";
 import { FaStar } from "react-icons/fa6";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const Orders = () => {
   const [hotels, setHotels] = useState<HotelType[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const hotelUser: string | undefined = Cookies.get("hotelUser");
+  let parsedUser: Record<string, any>;
+
+  if (hotelUser !== undefined) {
+    parsedUser = JSON.parse(hotelUser);
+  } else {
+    parsedUser = {};
+  }
+
   const fetchAllHotels = async () => {
-    const userData = Cookies.get("hotelUser");
-    const parsedData = JSON.parse(userData!);
+    if (!parsedUser?._id) {
+      return toast.error("Plese login to get orders");
+    }
     return (
-      await fetch(
-        `https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedData?._id}`,
-        {
-          method: "GET",
-        }
-      )
+      await fetch(`http://localhost:8000/api/v1/payment/${parsedUser?._id}`, {
+        method: "GET",
+      })
     ).json();
   };
 
@@ -24,6 +32,7 @@ const Orders = () => {
     queryKey: ["likedHotel"],
     queryFn: fetchAllHotels,
   });
+
   useEffect(() => {
     if (data) {
       const orderItemsArray = data?.data?.map((item: any) => item?.orderItems);
@@ -48,6 +57,13 @@ const Orders = () => {
     return <h3 className="text-center font-bold text-red-600">Loading....</h3>;
   }
 
+  if (!parsedUser?._id) {
+    return (
+      <h3 className="font-bold text-xl text-center">
+        Please login to get your orders
+      </h3>
+    );
+  }
   return (
     <div>
       <h3 className="text-gray-700 my-5 font-bold ml-1 text-xl lg:text-2xl flex gap-3 items-center">
@@ -94,7 +110,7 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {hotels?.length > 0 &&
+            {hotels?.length > 0 ? (
               hotels?.map((hotel: HotelType, index) => {
                 return (
                   <tr
@@ -141,12 +157,14 @@ const Orders = () => {
                       {hotel?.roomType}
                     </td>
                     <td className="px-6 py-4">
-                      {/* @ts-ignore */}
-                      ₹ {hotel?.price}
+                      {/* @ts-ignore */}₹ {hotel?.price}
                     </td>
                   </tr>
                 );
-              })}
+              })
+            ) : (
+              <h3>No record found</h3>
+            )}
           </tbody>
         </table>
       </div>
