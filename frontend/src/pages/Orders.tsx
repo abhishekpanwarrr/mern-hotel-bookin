@@ -22,7 +22,7 @@ const Orders = () => {
       return toast.error("Plese login to get orders");
     }
     return (
-      await fetch(`http://localhost:8000/api/v1/payment/${parsedUser?._id}`, {
+      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedUser?._id}`, {
         method: "GET",
       })
     ).json();
