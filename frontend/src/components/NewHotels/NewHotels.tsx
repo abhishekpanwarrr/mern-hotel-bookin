@@ -1,6 +1,4 @@
 import { HotelType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -10,27 +8,10 @@ import {
 } from "@/components/ui/carousel";
 import Hotel from "../Hotel";
 import Loader from "../Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const NewHotels = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["newhotels"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
-
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
@@ -50,15 +31,18 @@ const NewHotels = () => {
       ) : (
         <Carousel className=" mb-20 mx-10">
           <CarouselContent className="max-h-[450px]">
-            {hotels.length > 0 &&
-              hotels?.reverse().map((item: HotelType) => (
-                <CarouselItem
-                  key={item?._id}
-                  className="w-full xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
-                >
-                  <Hotel className={"h-[100%]"} item={item} />
-                </CarouselItem>
-              ))}
+            {data?.hotels?.length > 0 ?
+              data?.hotels?.reverse().map((item: HotelType) => {
+                
+                return (
+                  <CarouselItem
+                    key={item?._id}
+                    className="w-full xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                  >
+                    <Hotel className={"h-[100%]"} item={item} />
+                  </CarouselItem>
+                )
+              }): null}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

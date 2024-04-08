@@ -1,29 +1,10 @@
 import Hotel from "@/components/Hotel";
 import Loader from "@/components/Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 import { HotelType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 const AllHotels = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["allHotels"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
-
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
@@ -38,7 +19,7 @@ const AllHotels = () => {
           Rooms for booking
         </h3>
 
-        <form className="max-w-sm shadow-xl mb-3 py-3 px-3 rounded-xl" >
+        <form className="max-w-sm shadow-xl mb-3 py-3 px-3 rounded-xl">
           <label
             htmlFor="range"
             className="block mb-2 text-sm font-medium text-gray-900 "
@@ -64,11 +45,12 @@ const AllHotels = () => {
                 <Loader key={index} />
               ))}
             </div>
-          ) : (
-            hotels.length > 0 &&
-            hotels.map((item: HotelType) => {
+          ) : data?.hotels?.length > 0 ? (
+            data?.hotels?.map((item: HotelType) => {
               return <Hotel key={item._id} item={item} />;
             })
+          ) : (
+            <h3 className="text-center font-bold text-lg">Hotels not found</h3>
           )}
         </div>
         {/* )} */}

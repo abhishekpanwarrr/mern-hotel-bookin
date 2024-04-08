@@ -1,28 +1,10 @@
 import { HotelType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const RecentAddedHotels = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["recentAddedHotels"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
 
   if (isError) {
     return (
@@ -44,7 +26,7 @@ const RecentAddedHotels = () => {
             ))}
           </div>
         ) : (
-          hotels
+          data?.hotels
             ?.slice(0, 4)
             ?.map((hotel: HotelType) => (
               <Hotel key={hotel?._id} hotel={hotel} />

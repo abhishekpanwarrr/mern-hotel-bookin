@@ -1,12 +1,11 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { HotelType } from "@/types";
 import { FaStar } from "react-icons/fa6";
 import Cookies from "js-cookie";
-import toast from "react-hot-toast";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const Orders = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
+  const [hotel, setHotel] = useState<HotelType[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const hotelUser: string | undefined = Cookies.get("hotelUser");
   let parsedUser: Record<string, any>;
@@ -16,29 +15,26 @@ const Orders = () => {
   } else {
     parsedUser = {};
   }
-
-  const fetchAllHotels = async () => {
-    if (!parsedUser?._id) {
-      return toast.error("Plese login to get orders");
-    }
-    return (
-      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedUser?._id}`, {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["likedHotel"],
-    queryFn: fetchAllHotels,
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: `payment/${parsedUser?._id}`,
   });
+  // const fetchAllHotels = async () => {
+  //   if (!parsedUser?._id) {
+  //     return toast.error("Plese login to get orders");
+  //   }
+  //   return (
+  //     await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/payment/${parsedUser?._id}`, {
+  //       method: "GET",
+  //     })
+  //   ).json();
+  // };
 
   useEffect(() => {
-    if (data) {
-      const orderItemsArray = data?.data?.map((item: any) => item?.orderItems);
-      setHotels(orderItemsArray);
+    if (data?.hotels) {
+      const orderItemsArray = data?.hotels?.map((item: any) => item?.orderItems);
+      setHotel(orderItemsArray);
     }
-  }, [data]);
+  }, [data?.hotels]);
   const handleCheckBox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     if (e.target.checked === true) {
       setSelected((prev) => [...prev, id]);
@@ -110,8 +106,8 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {hotels?.length > 0 ? (
-              hotels?.map((hotel: HotelType, index) => {
+            {hotel?.length > 0 ? (
+              hotel?.map((hotel: HotelType, index) => {
                 return (
                   <tr
                     key={hotel?._id}

@@ -3,10 +3,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { HotelType } from "@/types";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -16,6 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 // @ts-ignore
 import { v4 as uuidv4 } from "uuid";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 const schema = yup
   .object({
     room: yup.string().required("Room is required"),
@@ -50,26 +48,11 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>;
 
 const HotelPage = () => {
+  const hotels: never[] = [];
   const params = useParams();
-  const getHotelData = async () => {
-    return (
-      await fetch(`https://hotel-backend-taupe.vercel.app/api/v1/hotel/hotel/${params.id}`, {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["hotelData"],
-    queryFn: getHotelData,
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: `hotel/hotel/${params.id}`,
   });
-  const [hotel, setHotel] = useState<HotelType>({} as HotelType);
-
-  useEffect(() => {
-    if (data) {
-      setHotel(data?.hotel);
-    }
-  }, [data]);
 
   const {
     register,
@@ -134,7 +117,8 @@ const HotelPage = () => {
         const data = {
           totalAmount: amount,
           orderItems: {
-            hotelName: hotel?.hotelName,
+            // @ts-ignore
+            hotelName: hotels?.hotelName,
             // @ts-ignore
             price: hotelData?.room?.price,
             // @ts-ignore
@@ -145,8 +129,8 @@ const HotelPage = () => {
             userHouse: hotelData?.house,
             userAddress: hotelData?.address,
             userZip: hotelData?.zip,
-            checkInDate:hotelData?.checkInDate,
-            checkOutDate:hotelData?.checkOutDate,
+            checkInDate: hotelData?.checkInDate,
+            checkOutDate: hotelData?.checkOutDate,
           },
           userId: parsedUser?._id,
           orderCreationId: order_id,
@@ -178,7 +162,7 @@ const HotelPage = () => {
   }
 
   const onSubmit = async (data: FormData) => {
-    console.log("🚀 ~ onSubmit ~ data:", data)
+    console.log("🚀 ~ onSubmit ~ data:", data);
     const userToken = Cookies.get("hotelToken");
     if (!userToken) {
       return toast.error("Please login first");
@@ -260,7 +244,8 @@ const HotelPage = () => {
                 {isLoading ? (
                   <>Loading...</>
                 ) : isError ? null : (
-                  hotel?.hotelName
+                  // @ts-ignore
+                  data?.hotel?.hotelName
                 )}
               </span>
             </div>
@@ -282,7 +267,8 @@ const HotelPage = () => {
               <img
                 className="w-full h-full object-cover rounded-sm"
                 src={
-                  hotel.imageUrl ||
+                  // @ts-ignore
+                  data?.hotel?.imageUrl ||
                   "https://images.pexels.com/photos/1499477/pexels-photo-1499477.jpeg?auto=compress&cs=tinysrgb&w=800"
                 }
                 alt="image description"
@@ -292,7 +278,8 @@ const HotelPage = () => {
             <div className="flex justify-between items-center my-4">
               <div className="px-1 basis-2/3">
                 <h3 className="font-semibold text-gray-700 text-lg">
-                  {hotel.hotelName}
+                  {/* @ts-ignore */}
+                  {data?.hotel?.hotelName}
                 </h3>
                 <p className="flex gap-3">
                   <span className="flex items-center gap-2">
@@ -308,15 +295,16 @@ const HotelPage = () => {
               <div className=" basis-1/2">
                 {/* ₹ {hotel?.roomType[0]?.deluxe}{" "} */}
                 <div className="flex flex-col">
-                  {hotel?.roomType?.map((room, index) => {
-                    const [roomType, price] = Object.entries(room)[0];
+                  {/* @ts-ignore */}               
+                  {data?.hotel?.roomType?.map((room, index) => {
+                    const [roomType, price]:any = Object.entries(room)[0];
                     return (
                       <div key={index} className="flex justify-between my-1">
                         <span className="capitalize font-semibold">
                           {roomType}
                         </span>
                         <span className="text-sm font-normal">
-                          ₹{price}
+                          ₹ {price}
                           {"  "} /night
                         </span>
                       </div>
@@ -329,7 +317,8 @@ const HotelPage = () => {
             {/* Hotel Description */}
             <div className="mb-2">
               <p className="text-sm text-gray-500 font-extralight pl-2">
-                {hotel?.description}
+                {/* @ts-ignore */}
+                {data?.hotel?.description}
               </p>
             </div>
             {/* Extra Info */}
@@ -356,7 +345,8 @@ const HotelPage = () => {
                 {...register("room")}
               >
                 <option selected>Choose room Type</option>
-                {hotel?.roomType?.map((room, index) => {
+                {/* @ts-ignore */}
+                {data?.hotel?.roomType?.map((room, index) => {
                   const roomType = Object.keys(room)[0];
                   const roomPrice = Object.values(room)[0];
                   const value = JSON.stringify({
@@ -404,17 +394,7 @@ const HotelPage = () => {
                 >
                   Check-out Date
                 </label>
-                {/* <DatePicker
-                  id="checkOutDate"
-                  selected={today}
-                  dateFormat="MM/dd/yyyy"
-                  onChange={(date: any) => {
-                    setValue("checkOutDate", date, { shouldValidate: true });
-                  }}
-                  minDate={today}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  // {...register("checkOutDate")}
-                /> */}
+
                 <input
                   type="date"
                   id="checkOutDate"

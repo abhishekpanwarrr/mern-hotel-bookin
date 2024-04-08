@@ -6,31 +6,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HotelType } from "@/types";
-import { useEffect, useState } from "react";
 // @ts-ignore
 import DatePicker from "react-datepicker";
-import { useQuery } from "@tanstack/react-query";
 import Loader from "./Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const TopCarousel = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["recentAddedHotels"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
 
   if (isError) {
     return (
@@ -46,7 +28,7 @@ const TopCarousel = () => {
       ) : (
         <Carousel className="relative mb-20 mx-10">
           <CarouselContent className="max-h-[550px]">
-            {hotels.map((hotel: HotelType) => (
+            {data?.hotels?.map((hotel: HotelType) => (
               <CarouselItem key={hotel?._id} className="">
                 <img
                   src={

@@ -1,40 +1,15 @@
 import Hotel from "@/components/Hotel";
 import Loader from "@/components/Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 import { HotelType } from "@/types";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const SearchResultPage = () => {
   const location = useLocation();
   const query = location.state?.query;
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-
-  const fetchData = async () => {
-    if (!query) {
-      return;
-    }
-    const response = await fetch(
-      `https://hotel-backend-taupe.vercel.app/api/v1/hotel/search?address=${query}`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    return response.json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["filterData", query],
-    queryFn: fetchData,
-    enabled: !!query,
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: `hotel/search?address=${query}`,
   });
-
-  useEffect(() => {
-    document.title = `Search Results for "${query}" | Hotel taj`;
-    if (data && data.status === 200) {
-      setHotels(data.hotels as Array<HotelType>);
-    }
-  }, [query, data]);
 
   if (isError) {
     return (
@@ -52,8 +27,8 @@ const SearchResultPage = () => {
             <Loader key={index} />
           ))}
         </div>
-      ) : hotels.length > 0 ? (
-        hotels.map((item: HotelType) => {
+      ) : data?.hotels?.length > 0 ? (
+        data?.hotels?.map((item: HotelType) => {
           return <Hotel key={item._id} item={item} />;
         })
       ) : (

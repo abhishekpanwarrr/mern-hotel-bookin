@@ -6,30 +6,12 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { HotelType } from "@/types";
-import { useEffect, useState } from "react";
 import Hotel from "../Hotel";
-import { useQuery } from "@tanstack/react-query";
 import Loader from "../Loader";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const RecentSearched = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["recentlySearched"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
 
   if (isError) {
     return (
@@ -50,8 +32,8 @@ const RecentSearched = () => {
       ) : (
         <Carousel className="mb-20 mx-10">
           <CarouselContent className="max-h-[450px]">
-            {hotels.length > 0 &&
-              hotels?.map((item: HotelType) => (
+            {data?.hotels?.length > 0 &&
+              data?.hotels?.map((item: HotelType) => (
                 <CarouselItem
                   key={item?._id}
                   className="xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"

@@ -1,8 +1,10 @@
 import { HotelType } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaRegHeart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
+import Cookies from "js-cookie";
 const Hotel = ({
   className,
   item,
@@ -11,6 +13,7 @@ const Hotel = ({
   item: HotelType;
 }) => {
   const queryClient = useQueryClient();
+
   const calculateAverageRating = () => {
     let sum = 0;
     let totalCount = 0;
@@ -24,19 +27,12 @@ const Hotel = ({
     const averageRating = sum / totalCount;
     return averageRating.toFixed(2);
   };
+  const userData = Cookies.get("hotelUser");
+  // @ts-ignore
+  const parsedUser = JSON.parse(userData);
   const averageRating = calculateAverageRating();
-  const fetchAllHotels = async () => {
-    return (
-      await fetch(
-        "https://hotel-backend-taupe.vercel.app/api/v1/users/660d50fda80847a6bb79f1f7",
-        { method: "GET" }
-      )
-    ).json();
-  };
-
-  const { data, isError } = useQuery({
-    queryKey: ["userDetails"],
-    queryFn: fetchAllHotels,
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: `users/${parsedUser?._id}`,
   });
 
   const mutation = useMutation({
@@ -63,6 +59,7 @@ const Hotel = ({
   if (isError) {
     alert("Something went wrong");
   }
+
   const handleLiked = (id: string) => {
     // @ts-ignore
     mutation.mutate({
@@ -70,6 +67,9 @@ const Hotel = ({
       hotelId: id,
     });
   };
+  if (isLoading) {
+    return <h3>Loading.....</h3>;
+  }
   return (
     <Link
       to={`/hotel/${item?._id}`}

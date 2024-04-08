@@ -13,7 +13,7 @@ import {
 import Layout from "./Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import NotFound from "./components/NotFound.tsx";
-import LinkedPage from "./pages/LinkedPage.tsx";
+import LinkedPage from "./pages/LikedPage.tsx";
 import Orders from "./pages/Orders.tsx";
 import HotelPage from "./pages/HotelPage.tsx";
 import AllHotels from "./pages/AllHotels.tsx";

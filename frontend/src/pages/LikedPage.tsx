@@ -1,33 +1,16 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { ChangeEvent, useState } from "react";
 import { HotelType } from "@/types";
 import { FaStar } from "react-icons/fa6";
 import { TbAirConditioning } from "react-icons/tb";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { FaDownload } from "react-icons/fa";
 import Skeleton from "@/components/Skeleton";
+import { useFetchHotels } from "@/hooks/useFetchHotels";
 
 const LinkedPage = () => {
-  const [hotels, setHotels] = useState<HotelType[]>([]);
+  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
   const [selected, setSelected] = useState<string[]>([]);
 
-  const fetchAllHotels = async () => {
-    return (
-      await fetch("https://hotel-backend-taupe.vercel.app/api/v1/hotel", {
-        method: "GET",
-      })
-    ).json();
-  };
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["likedHotel"],
-    queryFn: fetchAllHotels,
-  });
-  useEffect(() => {
-    if (data) {
-      setHotels(data.hotels);
-    }
-  }, [data]);
   const handleCheckBox = (e: ChangeEvent<HTMLInputElement>, id: string) => {
     if (e.target.checked === true) {
       setSelected((prev) => [...prev, id]);
@@ -107,8 +90,8 @@ const LinkedPage = () => {
             </tr>
           </thead>
           <tbody>
-            {hotels.length > 0 &&
-              hotels?.map((hotel: HotelType) => {
+            {data?.hotels?.length > 0 &&
+              data?.hotels?.map((hotel: HotelType) => {
                 const calculateAverageRating = () => {
                   let sum = 0;
                   let totalCount = 0;
