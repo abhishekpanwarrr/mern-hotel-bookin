@@ -2,9 +2,14 @@ import Hotel from "@/components/Hotel";
 import Loader from "@/components/Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
 import { HotelType } from "@/types";
+import { useEffect, useState } from "react";
 
 const AllHotels = () => {
-  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: "hotel",
+    key: "AllHotels",
+  });
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
@@ -12,6 +17,11 @@ const AllHotels = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data) {
+      setHotels(data?.hotels);
+    }
+  }, [data]);
   return (
     <div className="">
       <div className=" px-5 py-2">
@@ -45,8 +55,8 @@ const AllHotels = () => {
                 <Loader key={index} />
               ))}
             </div>
-          ) : data?.hotels?.length > 0 ? (
-            data?.hotels?.map((item: HotelType) => {
+          ) : hotels?.length > 0 ? (
+            hotels?.map((item: HotelType) => {
               return <Hotel key={item._id} item={item} />;
             })
           ) : (

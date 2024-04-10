@@ -7,7 +7,11 @@ interface GetFetchProps {
   key?: string;
 }
 
-const useFetchHotels = ({ endpoint = "", params = {}, key }: GetFetchProps) => {
+const useFetchHotels = ({
+  endpoint = "",
+  params = {},
+  key = "hotels",
+}: GetFetchProps) => {
   let url = `${BACKEND_URL + endpoint}`;
   if (Object.keys(params).length > 0) {
     const queryString = Object.entries(params)
@@ -30,7 +34,7 @@ const useFetchHotels = ({ endpoint = "", params = {}, key }: GetFetchProps) => {
     ).json();
   };
   const { data, isLoading, isError } = useQuery({
-    queryKey: [key  || "hotelList"], // unique cache key
+    queryKey: [key],
     queryFn: fetchAllHotels,
   });
 
