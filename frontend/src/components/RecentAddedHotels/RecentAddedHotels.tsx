@@ -2,8 +2,10 @@ import { HotelType } from "@/types";
 import { Link } from "react-router-dom";
 import Loader from "../Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
+import { useEffect, useState } from "react";
 
 const RecentAddedHotels = () => {
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
   const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
 
   if (isError) {
@@ -13,6 +15,11 @@ const RecentAddedHotels = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data?.hotels) {
+      return setHotels(data?.hotels);
+    }
+  }, [data?.hotels]);
   return (
     <div className="w-1/2 p-5 hidden lg:block">
       <p className="text-base font-bold mb-2 text-gray-700">
@@ -26,7 +33,8 @@ const RecentAddedHotels = () => {
             ))}
           </div>
         ) : (
-          data?.hotels
+          hotels.length &&
+          hotels
             ?.slice(0, 4)
             ?.map((hotel: HotelType) => (
               <Hotel key={hotel?._id} hotel={hotel} />

@@ -9,9 +9,14 @@ import {
 import Hotel from "../Hotel";
 import Loader from "../Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
+import { useEffect, useState } from "react";
 
 const NewHotels = () => {
-  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: "hotel",
+    key: "newlyaddedhotels",
+  });
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
@@ -19,6 +24,11 @@ const NewHotels = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data?.hotels) {
+      return setHotels(data?.hotels);
+    }
+  }, [data]);
   return (
     <div className="px-5">
       <h3 className="pl-5 font-semibold text-lg my-2">Newly added hotels</h3>
@@ -31,18 +41,18 @@ const NewHotels = () => {
       ) : (
         <Carousel className=" mb-20 mx-10">
           <CarouselContent className="max-h-[450px]">
-            {data?.hotels?.length > 0 ?
-              data?.hotels?.reverse().map((item: HotelType) => {
-                
-                return (
-                  <CarouselItem
-                    key={item?._id}
-                    className="w-full xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
-                  >
-                    <Hotel className={"h-[100%]"} item={item} />
-                  </CarouselItem>
-                )
-              }): null}
+            {hotels?.length > 0
+              ? hotels?.reverse().map((item: HotelType) => {
+                  return (
+                    <CarouselItem
+                      key={item?._id}
+                      className="w-full xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
+                    >
+                      <Hotel className={"h-[100%]"} item={item} />
+                    </CarouselItem>
+                  );
+                })
+              : null}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

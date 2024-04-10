@@ -10,9 +10,14 @@ import { HotelType } from "@/types";
 import DatePicker from "react-datepicker";
 import Loader from "./Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
+import { useEffect, useState } from "react";
 
 const TopCarousel = () => {
-  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: "hotel",
+    key: "carouselImage",
+  });
 
   if (isError) {
     return (
@@ -21,6 +26,11 @@ const TopCarousel = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data?.hotels) {
+      return setHotels(data?.hotels);
+    }
+  }, [data?.hotels]);
   return (
     <div>
       {isLoading ? (
@@ -28,17 +38,23 @@ const TopCarousel = () => {
       ) : (
         <Carousel className="relative mb-20 mx-10">
           <CarouselContent className="max-h-[550px]">
-            {data?.hotels?.map((hotel: HotelType) => (
-              <CarouselItem key={hotel?._id} className="">
-                <img
-                  src={
-                    hotel?.imageUrl ||
-                    "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                  }
-                  className=" w-full h-full object-cover"
-                />
-              </CarouselItem>
-            ))}
+            {hotels?.length > 0 ? (
+              hotels?.map((hotel: HotelType) => (
+                <CarouselItem key={hotel?._id} className="">
+                  <img
+                    src={
+                      hotel?.imageUrl ||
+                      "https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    }
+                    className=" w-full h-full object-cover"
+                  />
+                </CarouselItem>
+              ))
+            ) : (
+              <h3 className="text-center my-30 font-bold text-blue-900">
+                No hotel found
+              </h3>
+            )}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

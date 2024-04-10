@@ -1,9 +1,15 @@
+import { useEffect, useState } from "react";
 import Hotel from "../Hotel";
 import Loader from "../Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
+import { HotelType } from "@/types";
 
 const RecommendedHotels = () => {
-  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: "hotel",
+    key: "RecommendedHotels",
+  });
   if (isError) {
     return (
       <h3 className="text-center font-bold text-red-600">
@@ -11,6 +17,11 @@ const RecommendedHotels = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data?.hotels) {
+      return setHotels(data?.hotels);
+    }
+  }, [data?.hotels]);
   return (
     <>
       <h3 className="my-4 text-base font-semibold px-2 underline">
@@ -24,8 +35,8 @@ const RecommendedHotels = () => {
         </div>
       ) : (
         <div className="flex flex-col flex-wrap md:flex-nowrap md:flex-row gap-2 px-1 justify-center items-center ">
-          {data?.hotels?.length > 0 &&
-            data?.hotels
+          {hotels?.length > 0 &&
+            hotels
               ?.slice(0, 3)
               .map((item: any, index: number) => (
                 <Hotel key={index} className={""} item={item} />

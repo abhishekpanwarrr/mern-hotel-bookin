@@ -9,9 +9,14 @@ import { HotelType } from "@/types";
 import Hotel from "../Hotel";
 import Loader from "../Loader";
 import { useFetchHotels } from "@/hooks/useFetchHotels";
+import { useEffect, useState } from "react";
 
 const RecentSearched = () => {
-  const { isError, data, isLoading } = useFetchHotels({ endpoint: "hotel" });
+  const [hotels, setHotels] = useState<Array<HotelType>>([]);
+  const { isError, data, isLoading } = useFetchHotels({
+    endpoint: "hotel",
+    key: "RecentSearched",
+  });
 
   if (isError) {
     return (
@@ -20,6 +25,11 @@ const RecentSearched = () => {
       </h3>
     );
   }
+  useEffect(() => {
+    if (data?.hotels) {
+      return setHotels(data?.hotels);
+    }
+  }, [data]);
   return (
     <div className="px-5">
       <h3 className="pl-5 font-semibold text-lg my-2">Recently searched</h3>
@@ -32,8 +42,8 @@ const RecentSearched = () => {
       ) : (
         <Carousel className="mb-20 mx-10">
           <CarouselContent className="max-h-[450px]">
-            {data?.hotels?.length > 0 &&
-              data?.hotels?.map((item: HotelType) => (
+            {hotels?.length > 0 &&
+              hotels?.map((item: HotelType) => (
                 <CarouselItem
                   key={item?._id}
                   className="xl:basis-1/5 md:basis-1/3 lg:basis-1/5 pl-4"
